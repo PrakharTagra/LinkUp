@@ -3,15 +3,9 @@ import axios from "axios";
 
 import Student from "../models/Student.js";
 import { protect, roleGuard } from "../middleware/auth.js";
+import { SKILL_GAP_SERVICE_URL } from "../config/urls.js";
 
 const router = express.Router();
-
-const rawServiceUrl =
-  process.env.SKILL_GAP_SERVICE_URL ||
-  process.env.ML_SERVICE_URL ||
-  "http://localhost:8002";
-
-const SKILL_GAP_SERVICE_URL = rawServiceUrl.replace(/\/predict\/?$/, "").replace(/\/$/, "");
 
 const skillGapClient = axios.create({
   baseURL: SKILL_GAP_SERVICE_URL,

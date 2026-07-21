@@ -56,7 +56,7 @@ const sessionSchema = new mongoose.Schema(
     // in minutes
 
     // ── Pricing ───────────────────────────────────────────────
-    // Alumni keeps 80%, Connect takes 20%
+    // Alumni keeps 80%, LinkUp takes 20%
     // Live earnings preview in Create Session modal:
     //   "At ₹999/student · Your share: ₹799 per enrollment"
     // Sessions page revenue split notice:

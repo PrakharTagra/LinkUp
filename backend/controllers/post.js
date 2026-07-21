@@ -1,6 +1,5 @@
 import Post from "../models/Post.js";
 import { uploadImage } from "../config/cloudinary.js";
-import gossipEngine from "../p2p/GossipProtocol.js";
 
 // ─────────────────────────────────────────────
 // GET POSTS
@@ -98,20 +97,6 @@ export const createPost = async (req, res) => {
       "author",
       "name avatar role college company alumniPlan isVerified"
     );
-
-    // ✅ AUTOMATIC P2P INTEGRATION
-    // Broadcast this post via Gossip Protocol to the peer network
-    try {
-      if (gossipEngine && req.user._id) {
-        gossipEngine.gossip(
-          req.user._id.toString(),
-          `New feed post: "${content.substring(0, 40)}..."`
-        );
-        console.log(`[P2P] Post gossiped successfully by ${req.user._id}`);
-      }
-    } catch (gossipErr) {
-      console.error("[P2P] Background gossip error:", gossipErr.message);
-    }
 
     res.status(201).json({ message: "Post created", post });
   } catch (err) {

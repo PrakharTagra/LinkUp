@@ -378,7 +378,7 @@ export async function verifyPost(content) {
   }
   if (hasPaymentLink) {
     rejectionReasons.push(
-      "External payment links are not allowed — use Connect's built-in payment system"
+      "External payment links are not allowed — use LinkUp's built-in payment system"
     );
   }
 

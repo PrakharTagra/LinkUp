@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const modelsPath = 'c:/Users/krish/OneDrive/Desktop/Connect-final/backend/models';
+const modelsPath = 'c:/Users/krish/OneDrive/Desktop/LinkUp-final/backend/models';
 const files = fs.readdirSync(modelsPath).filter(f => f.endsWith('.js'));
 for (const file of files) {
   const filePath = path.join(modelsPath, file);

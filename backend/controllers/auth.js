@@ -100,13 +100,13 @@ export const sendOTP = async (req, res) => {
     });
 
     await transporter.sendMail({
-      from: `"Connect Platform" <${process.env.EMAIL_USER}>`,
+      from: `"LinkUp Platform" <${process.env.EMAIL_USER}>`,
       to: email,
-      subject: "Your Connect Verification Code",
+      subject: "Your LinkUp Verification Code",
       html: `
         <div style="font-family: 'Segoe UI', sans-serif; max-width: 480px; margin: 0 auto; background: #0F1018; color: #fff; border-radius: 16px; overflow: hidden;">
           <div style="background: linear-gradient(135deg, #7C5CFC, #9B7EFF); padding: 28px 32px;">
-            <h1 style="margin: 0; font-size: 22px; font-weight: 800;">Connect·Verify</h1>
+            <h1 style="margin: 0; font-size: 22px; font-weight: 800;">LinkUp·Verify</h1>
           </div>
           <div style="padding: 32px;">
             <p style="font-size: 15px; color: #ccc; margin-bottom: 24px;">Use the code below to verify your college email address:</p>
