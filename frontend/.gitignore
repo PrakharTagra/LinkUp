@@ -25,3 +25,6 @@ dist-ssr
 
 .ipynb_checkpoints/
 *.ipynb_checkpoints
+
+
+.env
