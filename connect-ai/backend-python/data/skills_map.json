@@ -1,0 +1,8 @@
+{
+  "Software Engineer": ["DSA","System Design","Python","Java","Problem Solving"],
+  "Data Analyst": ["SQL","Python","Excel","Statistics","Data Visualization"],
+  "Product Manager": ["Communication","Analytics","Leadership","Business Thinking"],
+  "Machine Learning Engineer": ["Python","Machine Learning","Statistics","Deep Learning","Docker"],
+  "Frontend Developer": ["JavaScript","React","CSS","HTML","System Design"],
+  "Backend Developer": ["Node.js","SQL","Docker","AWS","System Design"]
+}
