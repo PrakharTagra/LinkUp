@@ -1,1 +1,3 @@
-data
+data/*
+!data/job_skills.csv
+!data/sample_job_postings.csv
