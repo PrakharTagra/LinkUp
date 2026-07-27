@@ -1,4 +1,4 @@
-data/raw/
-data/processed/
-!data/processed/.gitkeep
-!data/processed/jobs_production.csv
+data/processed/jobs_balanced.csv
+data/processed/jobs_full_classified.csv
+data/processed/jobs_with_domains.csv
+data/raw
