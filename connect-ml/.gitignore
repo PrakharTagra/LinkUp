@@ -1,1 +1,4 @@
-data
+data/raw/
+data/processed/
+!data/processed/.gitkeep
+!data/processed/jobs_production.csv
