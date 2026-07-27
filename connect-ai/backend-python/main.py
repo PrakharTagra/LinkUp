@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from sentence_transformers import SentenceTransformer
+from fastembed import TextEmbedding
 import faiss, json, numpy as np
 from pymongo import MongoClient
 from dotenv import load_dotenv
@@ -24,7 +24,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-model = SentenceTransformer('all-MiniLM-L6-v2')
+model = TextEmbedding(model_name="sentence-transformers/all-MiniLM-L6-v2")
+
+def encode_one(text: str) -> np.ndarray:
+    return next(model.embed([text])).astype("float32")
 
 logger = logging.getLogger(__name__)
 BASE_DIR = Path(__file__).resolve().parent
@@ -57,7 +60,7 @@ def _build_roles_from_skills_map(skills_map_data: dict):
         if not isinstance(required_skills, list) or not required_skills:
             continue
         text = f"{role_name} {' '.join(required_skills)}"
-        embedding = model.encode(text).tolist()
+        embedding = encode_one(text).tolist()
         generated.append({
             "role": role_name,
             "skills": required_skills,
@@ -134,7 +137,7 @@ def _run_analysis(message: str, user_skills: list[str]):
     if index is None or not roles:
         raise HTTPException(status_code=503, detail=f"AI engine not ready: {startup_error}")
 
-    q_vec = model.encode(message).reshape(1, -1).astype("float32")
+    q_vec = encode_one(message).reshape(1, -1)
     _, idxs = index.search(q_vec, 3)
     best = roles[idxs[0][0]]
 
