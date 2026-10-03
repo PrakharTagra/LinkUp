@@ -77,9 +77,9 @@ const studentSchema = new mongoose.Schema({
 }, { timestamps: true });
 
 // ── Virtuals ─────────────────────────────────────────────────
-studentSchema.virtual('coursesEnrolledCount').get(function () { return this.enrolledCourses.length; });
-studentSchema.virtual('sessionsAttendedCount').get(function () { return this.enrolledSessions.length; });
-studentSchema.virtual('connectionsCount').get(function () { return this.connections.length; });
+studentSchema.virtual('coursesEnrolledCount').get(function () { return Array.isArray(this.enrolledCourses) ? this.enrolledCourses.length : 0; });
+studentSchema.virtual('sessionsAttendedCount').get(function () { return Array.isArray(this.enrolledSessions) ? this.enrolledSessions.length : 0; });
+studentSchema.virtual('connectionsCount').get(function () { return Array.isArray(this.connections) ? this.connections.length : 0; });
 
 studentSchema.set('toJSON',   { virtuals: true });
 studentSchema.set('toObject', { virtuals: true });

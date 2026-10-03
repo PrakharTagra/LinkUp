@@ -27,7 +27,7 @@ const postSchema = new mongoose.Schema(
     content: {
       type: String,
       required: [true, 'Post content is required'],
-      maxlength: [1000, 'Post content cannot exceed 1000 characters'],
+      maxlength: [4000, 'Post content cannot exceed 4000 characters'],
     },
 
     image: { type: String, default: '' },
@@ -68,8 +68,8 @@ const postSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-postSchema.virtual('likesCount').get(function () { return this.likes.length; });
-postSchema.virtual('commentsCount').get(function () { return this.comments.length; });
+postSchema.virtual('likesCount').get(function () { return Array.isArray(this.likes) ? this.likes.length : 0; });
+postSchema.virtual('commentsCount').get(function () { return Array.isArray(this.comments) ? this.comments.length : 0; });
 postSchema.set('toJSON', { virtuals: true });
 postSchema.set('toObject', { virtuals: true });
 
