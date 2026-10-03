@@ -17,7 +17,7 @@ export const FRONTEND_URL =
 const rawSkillGapUrl =
   process.env.SKILL_GAP_SERVICE_URL ||
   process.env.ML_SERVICE_URL ||
-  "http://localhost:8001";
+  "https://linkup-ml-sygp.onrender.com";
 
 export const SKILL_GAP_SERVICE_URL = rawSkillGapUrl
   .replace(/\/predict\/?$/, "")
