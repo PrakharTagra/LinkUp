@@ -227,14 +227,28 @@ export const updateProfile = async (req, res) => {
 
     // ✅ avatar upload
     if (avatar && avatar.startsWith("data:")) {
-      const { url } = await uploadImage(avatar, "avatars");
-      updates.avatar = url;
+      try {
+        const { url } = await uploadImage(avatar, "avatars");
+        updates.avatar = url;
+      } catch (uploadErr) {
+        console.warn("[Avatar Upload] Fallback to direct data:", uploadErr.message);
+        updates.avatar = avatar;
+      }
+    } else if (avatar) {
+      updates.avatar = avatar;
     }
 
     // ✅ cover upload
     if (coverPhoto && coverPhoto.startsWith("data:")) {
-      const { url } = await uploadImage(coverPhoto, "covers");
-      updates.coverPhoto = url;
+      try {
+        const { url } = await uploadImage(coverPhoto, "covers");
+        updates.coverPhoto = url;
+      } catch (uploadErr) {
+        console.warn("[Cover Upload] Fallback to direct data:", uploadErr.message);
+        updates.coverPhoto = coverPhoto;
+      }
+    } else if (coverPhoto) {
+      updates.coverPhoto = coverPhoto;
     }
 
     const userModel = getUserModelByRole(req.user.role);

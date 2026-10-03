@@ -32,12 +32,32 @@ if (!cloudName || !apiKey || !apiSecret) {
 
 // 🔹 Upload Image/Video Function (supports base64 data URIs)
 export const uploadImage = async (file, folder = "connect_platform") => {
+  const currentCloudName = process.env.CLOUDINARY_CLOUD_NAME;
+  const currentApiKey = process.env.CLOUDINARY_API_KEY;
+  const currentApiSecret = process.env.CLOUDINARY_API_SECRET;
+
+  if (!currentCloudName || !currentApiKey || !currentApiSecret) {
+    console.warn("[Cloudinary] Credentials missing on runtime. Using direct media fallback.");
+    return {
+      public_id: `fallback_${Date.now()}`,
+      url: file,
+      resource_type: "image",
+    };
+  }
+
+  // Ensure config is loaded if env vars arrived after module initialization
+  cloudinary.config({
+    cloud_name: currentCloudName,
+    api_key: currentApiKey,
+    api_secret: currentApiSecret,
+  });
+
   try {
     const result = await cloudinary.uploader.upload(file, {
       folder,
       resource_type: "auto",   // handles images AND videos
       chunk_size: 6000000,      // 6MB chunks for large files
-      timeout: 120000,          // 2 min timeout for slow connections
+      timeout: 15000,           // 15 sec timeout
     });
 
     return {
@@ -46,7 +66,15 @@ export const uploadImage = async (file, folder = "connect_platform") => {
       resource_type: result.resource_type,
     };
   } catch (error) {
-    console.error("Cloudinary Upload Error:", error.message || error);
+    console.warn("[Cloudinary] Upload Error:", error.message || error);
+    // If upload fails, fallback to direct data URI or URL so profile and posts never crash
+    if (typeof file === "string") {
+      return {
+        public_id: `fallback_${Date.now()}`,
+        url: file,
+        resource_type: "image",
+      };
+    }
     throw new Error(`Image upload failed: ${error.message || "Unknown error"}`);
   }
 };
