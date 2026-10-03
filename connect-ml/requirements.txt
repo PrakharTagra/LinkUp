@@ -9,3 +9,5 @@ uvicorn
 python-dotenv
 pydantic
 gunicorn
+pymongo
+requests

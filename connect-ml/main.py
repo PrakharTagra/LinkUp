@@ -1,47 +1,65 @@
-from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel, Field
-from sentence_transformers import SentenceTransformer
-from sklearn.metrics.pairwise import cosine_similarity
-import pandas as pd
-import numpy as np
-import re
-from pathlib import Path
-from typing import Optional
 import os
+import re
+import time
+import threading
+import gc
+from pathlib import Path
+from typing import Optional, List, Dict, Any
+from datetime import datetime
+from collections import Counter
+
+os.environ["OMP_NUM_THREADS"] = "1"
+os.environ["TOKENIZERS_PARALLELISM"] = "false"
+
+import torch
+torch.set_num_threads(1)
+torch.set_grad_enabled(False)
+
+import numpy as np
+import pandas as pd
+from sklearn.metrics.pairwise import cosine_similarity
+from sentence_transformers import SentenceTransformer
+from fastapi import FastAPI, HTTPException, Request
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel, Field
+
+# Skill Gap imports
+from skill_gap_model import SkillGapAnalyzer
+from db_client import get_mock_portal_data, get_mock_student, ConnectDBClient
 
 app = FastAPI(
-    title="Connect ML API",
-    description="Career Path Predictor for the Connect platform",
-    version="2.0.0"
+    title="LinkUp Unified ML & Skill Gap Service",
+    description="Career Path Recommendation & Skill Gap Analysis for LinkUp Platform",
+    version="2.1.0"
 )
-
-from fastapi.middleware.cors import CORSMiddleware
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-import os
-os.environ["OMP_NUM_THREADS"] = "1"
-import torch
-torch.set_num_threads(1)
-
-# ── Load production data on startup ──────────────────────────
-print("Loading model and data...")
-
-model = SentenceTransformer('all-MiniLM-L6-v2', device='cpu')
-
+START_TIME = time.time()
 BASE_DIR = Path(__file__).resolve().parent
-df = pd.read_csv(BASE_DIR / "data" / "processed" / "jobs_production.csv")
-embeddings = np.load(BASE_DIR / "models" / "job_embeddings_production.npy")
 
-print(f"Ready - {len(df)} jobs loaded")
-print(f"   Domains: {df['domain'].value_counts().to_dict()}")
+# ── Load Career Path Model & Dataset ───────────────────────────────────────
+print("Loading Career Path model and dataset...")
+model = SentenceTransformer("all-MiniLM-L6-v2", device="cpu")
 
-# ── Available domains (now 8, up from 6) ─────────────────────
+jobs_csv_path = BASE_DIR / "data" / "processed" / "jobs_production.csv"
+embeddings_path = BASE_DIR / "models" / "job_embeddings_production.npy"
+
+df = pd.read_csv(jobs_csv_path)
+if "skills_required" not in df.columns:
+    df["skills_required"] = df.get("skills_list", "").fillna("")
+else:
+    df["skills_required"] = df["skills_required"].fillna(df.get("skills_list", "")).fillna("")
+
+embeddings = np.load(embeddings_path)
+print(f"Ready: {len(df)} jobs and embeddings loaded.")
+
 VALID_DOMAINS = [
     "Software Engineering",
     "Data & AI",
@@ -61,13 +79,121 @@ ROADMAP_STAGES = [
     "Advanced Growth",
 ]
 
-# ── Helper: clean messy job titles ───────────────────────────
+# ── Skill Gap Analyzer Initialization ──────────────────────────────────────
+print("Initializing Skill Gap Analyzer...")
+default_postings_csv = BASE_DIR / "data" / "sample_job_postings.csv"
+if not default_postings_csv.exists():
+    default_postings_csv = BASE_DIR / "data" / "job_skills.csv"
+
+MONGO_URI = os.getenv("MONGO_URI")
+DB_NAME = os.getenv("DB_NAME", "test")
+USE_MOCK = os.getenv("USE_MOCK_DATA", "false").lower() in ("true", "1", "yes")
+
+if USE_MOCK or not MONGO_URI:
+    portal_data = get_mock_portal_data()
+    print("Skill Gap: Using mock portal data")
+else:
+    try:
+        db_client = ConnectDBClient(MONGO_URI, DB_NAME)
+        portal_data = db_client.get_portal_data()
+        db_client.close()
+        print(f"Skill Gap: Loaded portal data from MongoDB ({DB_NAME})")
+    except Exception as e:
+        print(f"Skill Gap DB warning: {e}. Falling back to mock data.")
+        portal_data = get_mock_portal_data()
+
+skill_analyzer = SkillGapAnalyzer(str(default_postings_csv), portal_data, max_postings_rows=15000)
+print("Skill Gap Analyzer ready.")
+
+gc.collect()
+
+# ── Helper Functions ───────────────────────────────────────────────────────
 def clean_title(title: str) -> str:
-    title = re.sub(r'\s+\d+$', '', title.strip())
-    title = re.sub(r'\s+(Ii|Iii|Iv|Vi|Vii)$', '', title.strip())
+    title = re.sub(r"\s+\d+$", "", str(title).strip())
+    title = re.sub(r"\s+(Ii|Iii|Iv|Vi|Vii)$", "", title.strip())
     return title.strip()
 
-# ── Request & Response models ─────────────────────────────────
+def tokenize_skill_text(raw_text: str) -> list[str]:
+    if not isinstance(raw_text, str) or not raw_text.strip():
+        return []
+    parts = [
+        p.strip().lower()
+        for p in re.split(r"[,|;/\\]", raw_text)
+        if p and p.strip()
+    ]
+    deduped = []
+    seen = set()
+    for token in parts:
+        if token not in seen:
+            deduped.append(token)
+            seen.add(token)
+    return deduped
+
+def build_roadmap(
+    readiness_percent: float,
+    job_skills: set[str],
+    matched_skills: list[str],
+    similarity_score: float,
+) -> tuple[list[dict[str, float | str]], int]:
+    roadmap = []
+    ordered_skills = sorted(job_skills)
+    stage_count = len(ROADMAP_STAGES)
+    stage_skill_groups = [ordered_skills[idx::stage_count] for idx in range(stage_count)]
+
+    matched_set = set(matched_skills)
+    cumulative_required = 0
+    cumulative_matched = 0
+    role_complexity = max(0.85, min(1.6, len(ordered_skills) / 6))
+    stage_difficulty = [0.88, 0.96, 1.04, 1.14, 1.24]
+
+    for idx, stage in enumerate(ROADMAP_STAGES):
+        group = stage_skill_groups[idx]
+        required_in_stage = len(group)
+        matched_in_stage = sum(1 for s in group if s in matched_set)
+
+        cumulative_required += required_in_stage
+        cumulative_matched += matched_in_stage
+
+        cumulative_coverage = (cumulative_matched / max(cumulative_required, 1)) * 100
+        stage_coverage = (matched_in_stage / max(required_in_stage, 1)) * 100
+        progression_bonus = ((idx + 1) / stage_count) * 6
+
+        blended_signal = (
+            (stage_coverage * 0.45)
+            + (cumulative_coverage * 0.25)
+            + (similarity_score * 0.30)
+        )
+
+        stage_readiness = round(
+            min(
+                100,
+                max(
+                    3,
+                    (blended_signal / (role_complexity * stage_difficulty[idx])) + progression_bonus,
+                ),
+            ),
+            1,
+        )
+
+        roadmap.append({
+            "stage": stage,
+            "stage_index": idx,
+            "readiness": stage_readiness,
+        })
+
+    if readiness_percent >= 80:
+        stage_idx = 4
+    elif readiness_percent >= 60:
+        stage_idx = 3
+    elif readiness_percent >= 40:
+        stage_idx = 2
+    elif readiness_percent >= 20:
+        stage_idx = 1
+    else:
+        stage_idx = 0
+    return roadmap, stage_idx
+
+# ── Schemas ────────────────────────────────────────────────────────────────
 class PredictRequest(BaseModel):
     student_skills: str = ""
     student_interests: str = ""
@@ -92,17 +218,21 @@ class PredictResponse(BaseModel):
     used_profile_skills: list[str] = Field(default_factory=list)
     predictions: list[CareerPath]
 
-# ── Routes ────────────────────────────────────────────────────
+# ── Health & Keep-Alive ────────────────────────────────────────────────────
 @app.get("/")
 def root():
     return {
-        "message": "Connect ML API is running",
-        "version": "2.0.0",
+        "service": "LinkUp ML & Skill Gap Service",
+        "status": "online",
+        "version": "2.1.0",
+        "uptime_seconds": round(time.time() - START_TIME, 1),
         "total_jobs": len(df),
         "endpoints": {
-            "predict": "/predict",
-            "domains": "/domains",
-            "health": "/health"
+            "career_predict": "/predict",
+            "career_domains": "/domains",
+            "skill_gap_domains": "/api/skill-gap/domains",
+            "skill_gap_analyze": "/api/skill-gap/analyze",
+            "health": "/health",
         }
     }
 
@@ -110,17 +240,19 @@ def root():
 def health():
     return {
         "status": "healthy",
-        "model": "all-MiniLM-L6-v2",
+        "service": "linkup-ml",
+        "uptime_seconds": round(time.time() - START_TIME, 1),
+        "timestamp": datetime.utcnow().isoformat(),
+        "memory_friendly": True,
         "jobs_loaded": len(df),
-        "domains": df['domain'].value_counts().to_dict()
     }
 
+# ── Career Path Predictor Endpoints ────────────────────────────────────────
 @app.get("/domains")
 def get_domains():
     domain_stats = {}
     for domain in VALID_DOMAINS:
-        count = len(df[df['domain'] == domain])
-        domain_stats[domain] = count
+        domain_stats[domain] = int((df["domain"] == domain).sum())
     return {
         "available_domains": VALID_DOMAINS,
         "job_counts": domain_stats
@@ -129,23 +261,19 @@ def get_domains():
 @app.post("/predict", response_model=PredictResponse)
 def predict(request: PredictRequest):
     if not 1 <= request.top_n <= 10:
-        raise HTTPException(
-            status_code=400,
-            detail="top_n must be between 1 and 10"
-        )
+        raise HTTPException(status_code=400, detail="top_n must be between 1 and 10")
 
     target_domain = request.target_domain or "All Domains"
-    if request.target_domain and request.target_domain not in VALID_DOMAINS:
-        raise HTTPException(
-            status_code=400,
-            detail=f"Invalid domain. Choose from: {VALID_DOMAINS}"
-        )
+    if request.target_domain and request.target_domain not in VALID_DOMAINS and request.target_domain != "All Domains":
+        raise HTTPException(status_code=400, detail=f"Invalid domain. Choose from: {VALID_DOMAINS}")
 
     student_profile = f"Skills: {request.student_skills}. Interests: {request.student_interests}"
-    student_embedding = model.encode([student_profile])
 
-    if request.target_domain:
-        domain_mask = df['domain'] == request.target_domain
+    with torch.inference_mode():
+        student_embedding = model.encode([student_profile])
+
+    if request.target_domain and request.target_domain != "All Domains":
+        domain_mask = (df["domain"] == request.target_domain).values
         domain_df = df[domain_mask].reset_index(drop=True)
         domain_embeddings = embeddings[domain_mask]
     else:
@@ -153,20 +281,17 @@ def predict(request: PredictRequest):
         domain_embeddings = embeddings
 
     if len(domain_df) == 0:
-        raise HTTPException(
-            status_code=404,
-            detail=f"No jobs found for domain: {target_domain}"
-        )
+        raise HTTPException(status_code=404, detail=f"No jobs found for domain: {target_domain}")
 
     similarities = cosine_similarity(student_embedding, domain_embeddings)[0]
 
     normalized_student_skills = {
-        s.strip().lower() for s in request.student_skills.split(",") if s.strip()
+        s.strip().lower() for s in re.split(r"[,|;]", request.student_skills) if s.strip()
     }
 
     title_counts = (
-        domain_df['title']
-        .fillna('')
+        domain_df["title"]
+        .fillna("")
         .apply(clean_title)
         .str.title()
         .value_counts()
@@ -179,97 +304,34 @@ def predict(request: PredictRequest):
     seen_titles: set[str] = set()
     predictions = []
 
-    def tokenize_skill_text(raw_text: str) -> list[str]:
-        if not isinstance(raw_text, str):
-            return []
-        parts = [
-            p.strip().lower()
-            for p in re.split(r"[,|;/\\]", raw_text)
-            if p and p.strip()
-        ]
-        deduped = []
-        seen = set()
-        for token in parts:
-            if token not in seen:
-                deduped.append(token)
-                seen.add(token)
-        return deduped
-
-    def build_roadmap(
-        readiness_percent: float,
-        job_skills: set[str],
-        matched_skills: list[str],
-        similarity_score: float,
-    ) -> tuple[list[dict[str, float | str]], int]:
-        roadmap = []
-
-        # Spread role-specific skills across stages so each career path has its own curve.
-        ordered_skills = sorted(job_skills)
-        stage_count = len(ROADMAP_STAGES)
-        stage_skill_groups = [ordered_skills[idx::stage_count] for idx in range(stage_count)]
-
-        matched_set = set(matched_skills)
-        cumulative_required = 0
-        cumulative_matched = 0
-        role_complexity = max(0.85, min(1.6, len(ordered_skills) / 6))
-        stage_difficulty = [0.88, 0.96, 1.04, 1.14, 1.24]
-
-        for idx, stage in enumerate(ROADMAP_STAGES):
-            group = stage_skill_groups[idx]
-            required_in_stage = len(group)
-            matched_in_stage = sum(1 for s in group if s in matched_set)
-
-            cumulative_required += required_in_stage
-            cumulative_matched += matched_in_stage
-
-            cumulative_coverage = (cumulative_matched / max(cumulative_required, 1)) * 100
-            stage_coverage = (matched_in_stage / max(required_in_stage, 1)) * 100
-            progression_bonus = ((idx + 1) / stage_count) * 6
-
-            blended_signal = (
-                (stage_coverage * 0.45)
-                + (cumulative_coverage * 0.25)
-                + (similarity_score * 0.30)
-            )
-
-            stage_readiness = round(
-                min(
-                    100,
-                    max(
-                        3,
-                        (blended_signal / (role_complexity * stage_difficulty[idx])) + progression_bonus,
-                    ),
-                ),
-                1,
-            )
-
-            roadmap.append({
-                "stage": stage,
-                "stage_index": idx,
-                "readiness": stage_readiness,
-            })
-
-        if readiness_percent >= 80:
-            stage_idx = 4
-        elif readiness_percent >= 60:
-            stage_idx = 3
-        elif readiness_percent >= 40:
-            stage_idx = 2
-        elif readiness_percent >= 20:
-            stage_idx = 1
-        else:
-            stage_idx = 0
-        return roadmap, stage_idx
-
     for idx in top_indices:
-        raw_title = domain_df.iloc[idx]['title'].title()
+        raw_title = str(domain_df.iloc[idx]["title"]).title()
         title = clean_title(raw_title)
-        role_domain = str(domain_df.iloc[idx].get('domain', 'General'))
+        role_domain = str(domain_df.iloc[idx].get("domain", "General"))
         similarity_score = round(float(similarities[idx]) * 100, 1)
         trending_boost = round((title_counts.get(title, 1) / max_title_count) * 100, 1)
         combined_score = round((similarity_score * 0.8) + (trending_boost * 0.2), 1)
 
-        job_skills = set(tokenize_skill_text(str(domain_df.iloc[idx].get('skills_required', ''))))
+        raw_skills = str(
+            domain_df.iloc[idx].get("skills_required")
+            or domain_df.iloc[idx].get("skills_list")
+            or ""
+        )
+        job_skills = set(tokenize_skill_text(raw_skills))
+
+        # Enrich skills based on title keywords if raw skills are generic
+        title_lower = title.lower()
+        if any(k in title_lower for k in ("software", "developer", "frontend", "full stack")):
+            job_skills.update({"javascript", "react.js", "node.js", "git", "html", "css"})
+        elif any(k in title_lower for k in ("backend", "api", "engineer")):
+            job_skills.update({"python", "node.js", "sql", "docker", "rest api", "git"})
+        elif any(k in title_lower for k in ("data", "ai", "machine learning", "analyst")):
+            job_skills.update({"python", "sql", "pandas", "machine learning", "data analysis"})
+        elif any(k in title_lower for k in ("design", "ui", "ux")):
+            job_skills.update({"figma", "ui design", "ux research", "prototyping"})
+        elif any(k in title_lower for k in ("product", "manager")):
+            job_skills.update({"product management", "agile", "roadmapping", "scrum"})
+
         matched_skills = sorted(list(normalized_student_skills.intersection(job_skills)))
         missing_skills = sorted(list(job_skills - normalized_student_skills))[:6]
 
@@ -287,9 +349,9 @@ def predict(request: PredictRequest):
         if title not in seen_titles:
             seen_titles.add(title)
 
-            exp_level = domain_df.iloc[idx].get('formatted_experience_level', 'All levels')
+            exp_level = domain_df.iloc[idx].get("formatted_experience_level", "All levels")
             if pd.isna(exp_level):
-                exp_level = 'All levels'
+                exp_level = "All levels"
 
             predictions.append(CareerPath(
                 career_path=title,
@@ -314,8 +376,122 @@ def predict(request: PredictRequest):
         predictions=predictions
     )
 
+# ── Skill Gap Analyzer Endpoints ───────────────────────────────────────────
+@app.get("/api/skill-gap/domains")
+def skill_gap_domains(n: int = 12):
+    domains = skill_analyzer.get_domains(n=n)
+    return {"domains": domains, "total": len(domains)}
+
+@app.post("/api/skill-gap/analyze")
+async def skill_gap_analyze(request: Request):
+    body = await request.json() or {}
+    student = body.get("student")
+    student_id = body.get("student_id")
+
+    if not student and student_id and MONGO_URI:
+        try:
+            client = ConnectDBClient(MONGO_URI, DB_NAME)
+            student = client.get_student(student_id=student_id)
+            client.close()
+        except Exception as e:
+            print("Skill gap DB lookup error:", e)
+
+    if not student:
+        student = get_mock_student()
+
+    domains = body.get("domains", [])
+    result = skill_analyzer.analyze(student, target_domains=domains)
+    result["meta"] = {
+        "service": "unified-ml",
+        "data_source": "dataset",
+    }
+    return result
+
+@app.get("/api/skill-gap/market-skills")
+def skill_gap_market_skills(domain: str = "", n: int = 20):
+    if domain:
+        skills = skill_analyzer.job_processor.get_top_skills_for_domain(domain, n)
+        freq = skill_analyzer.job_processor.get_domain_skill_frequency(domain, n)
+    else:
+        skills = skill_analyzer.job_processor.get_top_skills(n)
+        freq = dict(skill_analyzer.job_processor.skill_freq.most_common(n))
+
+    return {
+        "top_skills": skills,
+        "frequency": freq,
+        "domain": domain or "all",
+        "total_jobs": len(skill_analyzer.job_processor.df),
+    }
+
+@app.post("/api/skill-gap/role-matches")
+async def skill_gap_role_matches(request: Request):
+    body = await request.json() or {}
+    skills = body.get("skills", [])
+    top_n = body.get("top_n", 5)
+    matches = skill_analyzer.job_processor.get_matching_roles(skills, top_n)
+    return {"role_matches": matches}
+
+@app.post("/api/skill-gap/learning-path")
+async def skill_gap_learning_path(request: Request):
+    body = await request.json() or {}
+    gap_skills = body.get("gap_skills", [])
+    path = skill_analyzer.portal_mapper.get_learning_path(gap_skills)
+    return {"learning_path": path}
+
+@app.post("/api/skill-gap/batch-analyze")
+def skill_gap_batch_analyze():
+    if MONGO_URI and not USE_MOCK:
+        try:
+            client = ConnectDBClient(MONGO_URI, DB_NAME)
+            students = client.get_all_students()
+            client.close()
+        except Exception:
+            students = [get_mock_student()]
+    else:
+        students = [get_mock_student()]
+
+    results = []
+    for student in students[:50]:
+        res = skill_analyzer.analyze(student)
+        results.append({
+            "student_id": student.get("_id"),
+            "name": student.get("name"),
+            "readiness_score": res["skill_analysis"]["readiness_score"],
+            "top_gaps": res["skill_analysis"]["skill_gaps"][:5],
+            "best_role_match": res["role_matches"][0]["role"] if res["role_matches"] else None,
+        })
+
+    gap_counter = Counter()
+    for r in results:
+        for gap in r.get("top_gaps", []):
+            gap_counter[gap] += 1
+    common_gaps = [{"skill": s, "count": c} for s, c in gap_counter.most_common(10)]
+
+    return {
+        "total_students": len(results),
+        "analyses": results,
+        "common_gaps": common_gaps,
+    }
+
+# ── Render Keep-Alive Background Worker ────────────────────────────────────
+def run_keep_alive():
+    """Pings itself every 13 minutes on Render so free instance stays awake."""
+    import requests
+    time.sleep(30)
+    while True:
+        try:
+            self_url = os.getenv("RENDER_EXTERNAL_URL") or os.getenv("KEEP_ALIVE_URL")
+            if self_url:
+                target = self_url.rstrip("/") + "/health"
+                resp = requests.get(target, timeout=10)
+                print(f"[Keep-Alive] Pinged self at {target} -> {resp.status_code}")
+        except Exception as e:
+            print(f"[Keep-Alive] Notice: {e}")
+        time.sleep(13 * 60)
+
+threading.Thread(target=run_keep_alive, daemon=True).start()
 
 if __name__ == "__main__":
     import uvicorn
-
-    uvicorn.run("main:app", host="127.0.0.1", port=int(os.getenv("PORT", 8001)), reload=False)
+    port = int(os.getenv("PORT", 8001))
+    uvicorn.run("main:app", host="0.0.0.0", port=port, reload=False)

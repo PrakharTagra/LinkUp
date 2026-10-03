@@ -7,11 +7,16 @@ import { SKILL_GAP_SERVICE_URL } from "../config/urls.js";
 
 const router = express.Router();
 
-const skillGapClient = axios.create({
-  baseURL: SKILL_GAP_SERVICE_URL,
-  timeout: 20000,
-  headers: { "Content-Type": "application/json" },
-});
+const getClient = () => {
+  const url = (process.env.SKILL_GAP_SERVICE_URL || process.env.ML_SERVICE_URL || SKILL_GAP_SERVICE_URL)
+    .replace(/\/predict\/?$/, "")
+    .replace(/\/+$/, "");
+  return axios.create({
+    baseURL: url,
+    timeout: 25000,
+    headers: { "Content-Type": "application/json" },
+  });
+};
 
 function toAnalyzerStudent(studentDoc) {
   return {
@@ -45,7 +50,7 @@ async function getStudentByLookup({ studentId, studentEmail, fallbackUserId }) {
 
 router.get("/health", async (req, res) => {
   try {
-    const { data } = await skillGapClient.get("/health");
+    const { data } = await getClient().get("/health");
     return res.json(data);
   } catch (error) {
     return res.status(502).json({
@@ -70,7 +75,7 @@ router.get("/my-analysis", protect, roleGuard("student"), async (req, res) => {
           .map((d) => d.trim())
           .filter(Boolean);
 
-    const { data } = await skillGapClient.post("/api/skill-gap/analyze", {
+    const { data } = await getClient().post("/api/skill-gap/analyze", {
       student: toAnalyzerStudent(student),
       domains,
     });
@@ -105,7 +110,7 @@ router.get("/my-profile", protect, roleGuard("student"), async (req, res) => {
 
 router.get("/domains", protect, roleGuard("student", "alumni", "admin"), async (req, res) => {
   try {
-    const { data } = await skillGapClient.get("/api/skill-gap/domains");
+    const { data } = await getClient().get("/api/skill-gap/domains");
     return res.json(data);
   } catch (error) {
     return res.status(502).json({
@@ -137,7 +142,7 @@ router.post("/analyze", protect, async (req, res) => {
       return res.status(403).json({ message: "Students can only analyze their own profile" });
     }
 
-    const { data } = await skillGapClient.post("/api/skill-gap/analyze", {
+    const { data } = await getClient().post("/api/skill-gap/analyze", {
       student: toAnalyzerStudent(student),
       domains,
     });
@@ -154,7 +159,7 @@ router.post("/analyze", protect, async (req, res) => {
 router.get("/market-skills", protect, async (req, res) => {
   try {
     const n = Number.parseInt(req.query.n, 10) || 20;
-    const { data } = await skillGapClient.get(`/api/skill-gap/market-skills?n=${n}`);
+    const { data } = await getClient().get(`/api/skill-gap/market-skills?n=${n}`);
     return res.json(data);
   } catch (error) {
     return res.status(502).json({
@@ -167,7 +172,7 @@ router.get("/market-skills", protect, async (req, res) => {
 router.post("/learning-path", protect, async (req, res) => {
   try {
     const { gap_skills = [] } = req.body || {};
-    const { data } = await skillGapClient.post("/api/skill-gap/learning-path", { gap_skills });
+    const { data } = await getClient().post("/api/skill-gap/learning-path", { gap_skills });
     return res.json(data);
   } catch (error) {
     return res.status(502).json({
@@ -179,7 +184,7 @@ router.post("/learning-path", protect, async (req, res) => {
 
 router.get("/batch", protect, roleGuard("admin"), async (req, res) => {
   try {
-    const { data } = await skillGapClient.post("/api/skill-gap/batch-analyze", {});
+    const { data } = await getClient().post("/api/skill-gap/batch-analyze", {});
     return res.json(data);
   } catch (error) {
     return res.status(502).json({

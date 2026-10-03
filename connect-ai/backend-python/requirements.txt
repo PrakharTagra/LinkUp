@@ -1,8 +1,0 @@
-# requirements.txt
-fastapi
-uvicorn
-fastembed
-faiss-cpu
-pymongo
-python-dotenv
-numpy

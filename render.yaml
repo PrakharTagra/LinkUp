@@ -1,0 +1,50 @@
+services:
+  # ── LinkUp Node.js Main Backend ──────────────────────────────────────────
+  - type: web
+    name: linkup-backend
+    runtime: node
+    plan: free
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: FRONTEND_URL
+        sync: false
+      - key: MONGO_URI
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: GROQ_API_KEY
+        sync: false
+      - key: ML_SERVICE_URL
+        sync: false
+      - key: SKILL_GAP_SERVICE_URL
+        sync: false
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
+
+  # ── LinkUp Python Unified ML Service (Career Path + Skill Gap) ──────────
+  - type: web
+    name: linkup-ml
+    runtime: python
+    plan: free
+    rootDir: connect-ml
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: USE_MOCK_DATA
+        value: "true"
+      - key: MONGO_URI
+        sync: false

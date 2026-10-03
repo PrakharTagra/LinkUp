@@ -18,17 +18,17 @@ const apiKey = process.env.CLOUDINARY_API_KEY;
 const apiSecret = process.env.CLOUDINARY_API_SECRET;
 
 if (!cloudName || !apiKey || !apiSecret) {
-  throw new Error(
-    "Cloudinary env is missing. Set CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET in backend/.env"
+  console.warn(
+    "⚠️ Warning: Cloudinary env vars missing (CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET). Media uploads will be disabled until configured."
   );
+} else {
+  // 🔹 Configure Cloudinary
+  cloudinary.config({
+    cloud_name: cloudName,
+    api_key: apiKey,
+    api_secret: apiSecret,
+  });
 }
-
-// 🔹 Configure Cloudinary
-cloudinary.config({
-  cloud_name: cloudName,
-  api_key: apiKey,
-  api_secret: apiSecret,
-});
 
 // 🔹 Upload Image/Video Function (supports base64 data URIs)
 export const uploadImage = async (file, folder = "connect_platform") => {
