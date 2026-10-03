@@ -1,8 +1,14 @@
 import axios from "axios";
 import { API_URL } from "../config/urls.js";
 
+// Normalize baseURL so that having or not having a trailing "/api" doesn't produce "/api/api"
+const cleanBaseUrl = (API_URL || "http://localhost:5000").replace(/\/+$/, "");
+const resolvedBaseURL = cleanBaseUrl.endsWith("/api")
+  ? cleanBaseUrl
+  : `${cleanBaseUrl}/api`;
+
 const API = axios.create({
-  baseURL: `${API_URL}/api`,
+  baseURL: resolvedBaseURL,
   withCredentials: true,
 });
 

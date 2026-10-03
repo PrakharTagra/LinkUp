@@ -39,37 +39,50 @@ const configuredFrontend = cleanOrigin(FRONTEND_URL);
 
 app.use(cors({
   origin: function (origin, callback) {
+    // If no origin (e.g. mobile apps, curl, server-to-server health checks)
     if (!origin) return callback(null, true);
+
     const normalized = cleanOrigin(origin);
 
     const isLocal =
       normalized.includes("localhost") ||
       normalized.includes("127.0.0.1");
 
-    const isConfigured = normalized === configuredFrontend;
+    const isConfigured =
+      configuredFrontend === "*" ||
+      normalized === configuredFrontend;
+
     const isVercelOrRender =
       normalized.endsWith(".vercel.app") ||
       normalized.endsWith(".onrender.com");
 
-    if (isLocal || isConfigured || isVercelOrRender) {
-      callback(null, true);
-    } else {
-      // Still allow if custom additional origins specified
-      const extra = (process.env.ADDITIONAL_ALLOWED_ORIGINS || "")
-        .split(",")
-        .map(cleanOrigin)
-        .filter(Boolean);
-      if (extra.includes(normalized)) {
-        callback(null, true);
-      } else {
-        // Fallback: log warning and allow or disallow
-        console.warn(`[CORS] Request from origin: ${origin}`);
-        callback(null, true); // Permissive in production to prevent user lockouts
-      }
+    const extra = (process.env.ADDITIONAL_ALLOWED_ORIGINS || "")
+      .split(",")
+      .map(cleanOrigin)
+      .filter(Boolean);
+    const isExtra = extra.includes(normalized);
+
+    // When credentials: true is enabled, Access-Control-Allow-Origin MUST reflect
+    // the exact origin string and NEVER the wildcard '*'
+    if (isLocal || isConfigured || isVercelOrRender || isExtra) {
+      return callback(null, origin);
     }
+
+    // Default permissive fallback in production: reflect origin to avoid user lockouts
+    return callback(null, origin);
   },
   credentials: true,
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With", "Accept"],
 }));
+
+// Gracefully rewrite duplicate /api/api prefixes if requested by older frontend builds
+app.use((req, res, next) => {
+  if (req.url.startsWith("/api/api/")) {
+    req.url = req.url.replace(/^\/api\/api\//, "/api/");
+  }
+  next();
+});
 
 app.use(express.json({ limit: "15mb" }));
 app.use(express.urlencoded({ limit: "15mb", extended: true }));

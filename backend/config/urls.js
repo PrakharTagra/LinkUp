@@ -11,7 +11,7 @@
 
 // The deployed frontend URL, used for CORS.
 export const FRONTEND_URL =
-  process.env.FRONTEND_URL || "https://connect-six-ebon.vercel.app";
+  process.env.FRONTEND_URL || "https://link-up-beige.vercel.app";
 
 // The Unified ML & Skill Gap microservice URL.
 const rawSkillGapUrl =
