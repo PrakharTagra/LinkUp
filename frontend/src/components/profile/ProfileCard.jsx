@@ -375,7 +375,7 @@ export default function ProfileCard({ user = {}, onEdit, onAvatarChange, onCover
           setCropImage(null);
           setCropType(null);
         }}
-        aspectRatio={cropType === "cover" ? 4 / 3 : 1}
+        aspectRatio={cropType === "cover" ? 3.2 : 1}
       />
     )}
   </>
