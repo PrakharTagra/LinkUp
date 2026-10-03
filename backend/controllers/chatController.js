@@ -140,16 +140,37 @@ async function callLLM(systemPrompt, userMessage) {
   }
 
   const groq = new Groq({ apiKey });
-  const resp = await groq.chat.completions.create({
-    model: "llama-3.3-70b-versatile",
-    messages: [
-      { role: "system", content: systemPrompt },
-      { role: "user", content: userMessage },
-    ],
-    temperature: 0.5,
-    max_tokens: 1024,
-  });
-  return resp.choices[0].message.content;
+  const candidateModels = [
+    process.env.GROQ_MODEL,
+    "qwen/qwen3.8-27b",
+    "llama-3.3-70b-versatile",
+    "openai/gpt-oss-120b",
+    "openai/gpt-oss-20b",
+  ].filter(Boolean);
+
+  let lastError = null;
+  for (const model of candidateModels) {
+    try {
+      const resp = await groq.chat.completions.create({
+        model,
+        messages: [
+          { role: "system", content: systemPrompt },
+          { role: "user", content: userMessage },
+        ],
+        temperature: 0.5,
+        max_tokens: 1024,
+      });
+      const content = resp.choices?.[0]?.message?.content;
+      if (content && content.trim()) {
+        return content.trim();
+      }
+    } catch (err) {
+      lastError = err;
+      console.warn(`[Groq] Model ${model} failed: ${err.message}. Trying next candidate...`);
+    }
+  }
+
+  throw lastError || new Error("No Groq model candidates succeeded");
 }
 
 export const handleChatMessage = async (req, res) => {
