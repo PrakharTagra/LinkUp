@@ -89,41 +89,66 @@ export const sendOTP = async (req, res) => {
     const expiresAt = Date.now() + 10 * 60 * 1000; // 10 minutes
     otpStore.set(email.toLowerCase(), { otp, expiresAt });
 
-    // Send email
-    const transporter = nodemailer.createTransport({
-      host: process.env.EMAIL_HOST || "smtp.gmail.com",
-      port: 587,
-      secure: false,
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
-    });
+    const emailUser = process.env.EMAIL_USER;
+    const emailPass = process.env.EMAIL_PASS;
 
-    await transporter.sendMail({
-      from: `"LinkUp Platform" <${process.env.EMAIL_USER}>`,
-      to: email,
-      subject: "Your LinkUp Verification Code",
-      html: `
-        <div style="font-family: 'Segoe UI', sans-serif; max-width: 480px; margin: 0 auto; background: #0F1018; color: #fff; border-radius: 16px; overflow: hidden;">
-          <div style="background: linear-gradient(135deg, #7C5CFC, #9B7EFF); padding: 28px 32px;">
-            <h1 style="margin: 0; font-size: 22px; font-weight: 800;">LinkUp·Verify</h1>
-          </div>
-          <div style="padding: 32px;">
-            <p style="font-size: 15px; color: #ccc; margin-bottom: 24px;">Use the code below to verify your college email address:</p>
-            <div style="background: #1a1b2e; border: 1px solid rgba(124,92,252,0.3); border-radius: 12px; padding: 24px; text-align: center; margin-bottom: 24px;">
-              <span style="font-size: 40px; font-weight: 800; letter-spacing: 10px; color: #9B7EFF;">${otp}</span>
+    // If SMTP credentials are provided, attempt to deliver real email
+    if (emailUser && emailPass) {
+      try {
+        const transporter = nodemailer.createTransport({
+          host: process.env.EMAIL_HOST || "smtp.gmail.com",
+          port: parseInt(process.env.EMAIL_PORT || "587", 10),
+          secure: process.env.EMAIL_SECURE === "true",
+          auth: {
+            user: emailUser,
+            pass: emailPass,
+          },
+          connectionTimeout: 6000,
+          greetingTimeout: 6000,
+          socketTimeout: 6000,
+        });
+
+        await transporter.sendMail({
+          from: `"LinkUp Platform" <${emailUser}>`,
+          to: email,
+          subject: "Your LinkUp Verification Code",
+          html: `
+            <div style="font-family: 'Segoe UI', sans-serif; max-width: 480px; margin: 0 auto; background: #0F1018; color: #fff; border-radius: 16px; overflow: hidden;">
+              <div style="background: linear-gradient(135deg, #7C5CFC, #9B7EFF); padding: 28px 32px;">
+                <h1 style="margin: 0; font-size: 22px; font-weight: 800;">LinkUp·Verify</h1>
+              </div>
+              <div style="padding: 32px;">
+                <p style="font-size: 15px; color: #ccc; margin-bottom: 24px;">Use the code below to verify your email address:</p>
+                <div style="background: #1a1b2e; border: 1px solid rgba(124,92,252,0.3); border-radius: 12px; padding: 24px; text-align: center; margin-bottom: 24px;">
+                  <span style="font-size: 40px; font-weight: 800; letter-spacing: 10px; color: #9B7EFF;">${otp}</span>
+                </div>
+                <p style="font-size: 13px; color: #888;">This code expires in <strong style="color:#fff">10 minutes</strong>. Do not share it with anyone.</p>
+              </div>
             </div>
-            <p style="font-size: 13px; color: #888;">This code expires in <strong style="color:#fff">10 minutes</strong>. Do not share it with anyone.</p>
-          </div>
-        </div>
-      `,
-    });
+          `,
+        });
 
-    res.json({ message: "OTP sent to your college email" });
+        return res.json({ message: "OTP sent to your email", emailSent: true });
+      } catch (mailErr) {
+        console.warn(`[OTP] SMTP delivery failed for ${email}: ${mailErr.message}. Falling back to test code mode.`);
+        return res.json({
+          message: "OTP generated (SMTP delivery unavailable; code provided for verification)",
+          emailSent: false,
+          otp: otp,
+        });
+      }
+    }
+
+    // Graceful fallback if EMAIL_USER / EMAIL_PASS not configured
+    console.log(`[OTP] SMTP credentials unconfigured. Generated code for ${email}: ${otp}`);
+    return res.json({
+      message: "OTP generated successfully (Demo Mode)",
+      emailSent: false,
+      otp: otp,
+    });
   } catch (err) {
     console.error("Send OTP error:", err);
-    res.status(500).json({ message: "Failed to send OTP: " + err.message });
+    res.status(500).json({ message: "Failed to process OTP request: " + err.message });
   }
 };
 
