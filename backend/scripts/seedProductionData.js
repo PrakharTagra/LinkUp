@@ -27,7 +27,7 @@ async function seed() {
   const defaultPassword = await bcrypt.hash("LinkUp@2026!", 10);
 
   // ─────────────────────────────────────────────────────────────
-  // 1. REALISTIC ALUMNI PROFILES
+  // 1. REALISTIC ALUMNI PROFILES (CLEAN BULLETS, NO EMOJIS)
   // ─────────────────────────────────────────────────────────────
   const alumniData = [
     {
@@ -38,7 +38,12 @@ async function seed() {
       avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=500&auto=format&fit=crop&q=80",
       coverPhoto: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=1200&auto=format&fit=crop&q=80",
       about:
-        "Staff Software Engineer at Google leading distributed storage architecture. Previously SWE II at Uber. Passionate about helping ambitious students master Low-Level System Design, concurrency, and high-throughput backend systems.",
+        `Staff Software Engineer at Google leading distributed storage architecture. Previously SWE II at Uber.
+
+Core focus areas and mentoring topics:
+• Low-level system design (LLD) and thread-safe concurrency
+• High-throughput storage systems, Raft consensus, and Kafka pipelines
+• Technical interview strategy for Tier-1 product companies and resume reviews`,
       title: "Staff Software Engineer @ Google",
       headline: "Ex-Uber · IIT Delhi '20 · Distributed Systems & Scalable Architecture",
       company: "Google",
@@ -73,7 +78,7 @@ async function seed() {
           startDate: new Date("2020-07-01"),
           endDate: new Date("2022-07-31"),
           isCurrent: false,
-          description: "Scaled driver-dispatch dispatch algorithms and reduced P99 latency by 42% on critical trip-match services.",
+          description: "Scaled driver-dispatch algorithms and reduced P99 latency by 42% on critical trip-match services.",
         },
       ],
       education: [
@@ -92,9 +97,6 @@ async function seed() {
           title: "RaftKV - Distributed Key-Value Engine",
           link: "https://github.com/aditya-verma/raft-kv",
           description: "Production-ready consensus engine written in Go supporting linearizable reads and zero-downtime snapshots.",
-          fileUrl: "",
-          fileName: "",
-          fileType: "",
         },
       ],
       availability: [
@@ -114,7 +116,12 @@ async function seed() {
       avatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=500&auto=format&fit=crop&q=80",
       coverPhoto: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=1200&auto=format&fit=crop&q=80",
       about:
-        "Senior AI/ML Research Engineer at Microsoft AI. I work on large language model fine-tuning, latency-optimized quantization, and retrieval-augmented generation (RAG) pipelines. Mentored 120+ students on transitioning into Machine Learning engineering.",
+        `Senior AI/ML Research Engineer at Microsoft AI. Ex-Flipkart Data Science.
+
+Core focus areas and mentoring topics:
+• LLM fine-tuning methodologies (LoRA, QLoRA) and quantization (AWQ, GPTQ)
+• Production RAG architectures with hybrid search and semantic reranking
+• Transitioning from academia to applied industry Machine Learning engineering`,
       title: "Senior Machine Learning Engineer @ Microsoft",
       headline: "IIT Bombay '21 · GenAI & LLM Productionization · Ex-Flipkart Data Science",
       company: "Microsoft",
@@ -187,7 +194,12 @@ async function seed() {
       avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&auto=format&fit=crop&q=80",
       coverPhoto: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=1200&auto=format&fit=crop&q=80",
       about:
-        "Founding Tech Lead at Zepto. Built our real-time order tracking and store-allocation engine from day zero. Deeply passionate about modern full stack engineering, high concurrency in Go/Node.js, and helping college coders build real production muscle.",
+        `Founding Tech Lead at Zepto. Built our real-time order tracking and store-allocation engine.
+
+Core focus areas and mentoring topics:
+• Full-stack systems architecture with Go, Node.js, and Next.js
+• Real-time WebSocket clustering and Redis pub/sub communication
+• Practical guidance on transitioning from university projects to production codebases`,
       title: "Founding Tech Lead @ Zepto",
       headline: "NIT Trichy '21 · High-Scale Systems · Next.js, Go & Microservices",
       company: "Zepto",
@@ -224,16 +236,9 @@ async function seed() {
           startYear: 2017,
           endYear: 2021,
           grade: "8.9 CGPA",
-          description: "Technical Lead for NIT Trichy Delta Force development wing.",
         },
       ],
-      projects: [
-        {
-          title: "HyperQueue - In-Memory Ephemeral Job Pipeline",
-          link: "https://github.com/rohan-k/hyperqueue",
-          description: "High-throughput priority queue with crash resilience and sub-millisecond dispatching.",
-        },
-      ],
+      projects: [],
       availability: [
         { day: "Tuesday", startTime: "8:00 PM", endTime: "10:00 PM" },
         { day: "Saturday", startTime: "2:00 PM", endTime: "6:00 PM" },
@@ -251,7 +256,12 @@ async function seed() {
       avatar: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=500&auto=format&fit=crop&q=80",
       coverPhoto: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1200&auto=format&fit=crop&q=80",
       about:
-        "Senior Product Manager at Amazon Prime Video. Ex-Product Lead at Swiggy. Specialize in product strategy, user discovery, metrics definitions (North Star & Guardrails), and coaching engineers/students to ace PM behavioral rounds.",
+        `Senior Product Manager at Amazon Prime Video. Ex-Product Lead at Swiggy.
+
+Core focus areas and mentoring topics:
+• Product Sense and execution frameworks (CIRCLES, RICE prioritization)
+• A/B testing methodologies and customer discovery for consumer internet products
+• Behavioral interview preparation using Amazon Leadership Principles`,
       title: "Senior Product Manager @ Amazon",
       headline: "DTU '19 · Product Strategy & Tech Leadership · Ex-Swiggy PM",
       company: "Amazon",
@@ -279,15 +289,6 @@ async function seed() {
           isCurrent: true,
           description: "Leading Prime Video personalization & retention growth for India and SEA markets.",
         },
-        {
-          company: "Swiggy",
-          title: "Product Manager - Consumer Growth",
-          location: "Bengaluru, India",
-          startDate: new Date("2019-07-01"),
-          endDate: new Date("2022-03-31"),
-          isCurrent: false,
-          description: "Scaled Swiggy One membership checkout conversion by 28% through targeted onboarding experiments.",
-        },
       ],
       education: [
         {
@@ -297,7 +298,6 @@ async function seed() {
           startYear: 2015,
           endYear: 2019,
           grade: "8.7 CGPA",
-          description: "President of DTU Consulting Club. Winner of national Case Study Competitions.",
         },
       ],
       projects: [],
@@ -318,7 +318,12 @@ async function seed() {
       avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=500&auto=format&fit=crop&q=80",
       coverPhoto: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1200&auto=format&fit=crop&q=80",
       about:
-        "Principal Cloud Solutions Architect at AWS. 5x AWS Certified, Kubernetes enthusiast. I design multi-region resilient cloud topologies and help aspiring DevOps and backend engineers master Terraform, CI/CD, and production incident response.",
+        `Principal Cloud Solutions Architect at AWS. 5x AWS Certified, CKA holder.
+
+Core focus areas and mentoring topics:
+• Multi-region Kubernetes architecture and disaster recovery automation
+• Infrastructure as Code with Terraform and automated CI/CD pipelines
+• Site Reliability Engineering practices and AWS certification roadmaps`,
       title: "Principal Cloud Architect @ AWS",
       headline: "BITS Pilani '19 · Cloud Infrastructure & Multi-Region Kubernetes · DevOps",
       company: "Amazon Web Services (AWS)",
@@ -355,7 +360,6 @@ async function seed() {
           startYear: 2015,
           endYear: 2019,
           grade: "9.1 CGPA",
-          description: "Coordinator of APOGEE technical festival. System Administrator for campus computing grid.",
         },
       ],
       projects: [],
@@ -375,7 +379,12 @@ async function seed() {
       avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=500&auto=format&fit=crop&q=80",
       coverPhoto: "https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?w=1200&auto=format&fit=crop&q=80",
       about:
-        "Staff Product Designer at Flipkart. Creator of design systems scaled across 200M+ users. I guide engineering students looking to pivot into UI/UX and product design with portfolio teardowns and behavioral design frameworks.",
+        `Staff Product Designer at Flipkart. Lead designer for checkout and design systems.
+
+Core focus areas and mentoring topics:
+• Building comprehensive design systems in Figma for large engineering teams
+• UX portfolio teardowns and articulating business impact of design decisions
+• Transitioning from engineering or general disciplines into product design`,
       title: "Staff Product Designer @ Flipkart",
       headline: "IIT Guwahati '21 · Design Systems & Mobile UX · 200M+ Users",
       company: "Flipkart",
@@ -401,7 +410,7 @@ async function seed() {
           location: "Bengaluru, India",
           startDate: new Date("2021-07-01"),
           isCurrent: true,
-          description: "Leading the core checkout and cart experience design across mobile web and native apps.",
+          description: "Leading core checkout and cart experience design across mobile web and native apps.",
         },
       ],
       education: [
@@ -412,7 +421,6 @@ async function seed() {
           startYear: 2017,
           endYear: 2021,
           grade: "9.3 CGPA",
-          description: "Winner of International Red Dot Concept Design Award.",
         },
       ],
       projects: [],
@@ -432,7 +440,12 @@ async function seed() {
       avatar: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=500&auto=format&fit=crop&q=80",
       coverPhoto: "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=1200&auto=format&fit=crop&q=80",
       about:
-        "Quantitative Strategy Vice President at Goldman Sachs. Ex-Citadel intern. Expert in algorithmic trading, low-latency C++, stochastic calculus, and mathematical finance interview preparation.",
+        `Quantitative Strategy Vice President at Goldman Sachs.
+
+Core focus areas and mentoring topics:
+• Algorithmic trading and market-making models for equity derivatives
+• Low-latency C++ programming, memory optimization, and cache mechanics
+• Mathematical finance interview preparation and stochastic calculus fundamentals`,
       title: "Vice President, Quantitative Trading @ Goldman Sachs",
       headline: "IIT Madras '20 · High-Frequency Trading & Mathematical Modeling",
       company: "Goldman Sachs",
@@ -469,7 +482,6 @@ async function seed() {
           startYear: 2016,
           endYear: 2020,
           grade: "9.5 CGPA",
-          description: "Institute Gold Medalist for Academic Excellence.",
         },
       ],
       projects: [],
@@ -489,7 +501,12 @@ async function seed() {
       avatar: "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=500&auto=format&fit=crop&q=80",
       coverPhoto: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=1200&auto=format&fit=crop&q=80",
       about:
-        "Staff Cybersecurity Architect at Palo Alto Networks. Specialist in Cloud Threat Detection, Zero Trust architectures, and AppSec automation. Mentoring students on cracking cybersecurity careers, CTFs, and security certifications.",
+        `Staff Security Architect at Palo Alto Networks.
+
+Core focus areas and mentoring topics:
+• Application Security (AppSec) auditing and OWASP Top 10 vulnerabilities
+• Cloud security architectures and Zero Trust implementation models
+• Guidance on security certifications (OSCP, CISSP) and competitive CTF preparation`,
       title: "Staff Security Architect @ Palo Alto Networks",
       headline: "IIIT Hyderabad '20 · Zero Trust & Cloud Defense · Bug Bounty Hunter",
       company: "Palo Alto Networks",
@@ -526,7 +543,6 @@ async function seed() {
           startYear: 2016,
           endYear: 2020,
           grade: "9.0 CGPA",
-          description: "Top-10 finalist at Defcon International CTF 2019.",
         },
       ],
       projects: [],
@@ -541,7 +557,7 @@ async function seed() {
   ];
 
   // ─────────────────────────────────────────────────────────────
-  // 2. REALISTIC STUDENT PROFILES
+  // 2. REALISTIC STUDENT PROFILES (CLEAN BULLETS, NO EMOJIS)
   // ─────────────────────────────────────────────────────────────
   const studentData = [
     {
@@ -552,7 +568,12 @@ async function seed() {
       avatar: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=500&auto=format&fit=crop&q=80",
       coverPhoto: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=1200&auto=format&fit=crop&q=80",
       about:
-        "3rd Year B.Tech CSE student at DTU. Passionate about distributed systems, Go, and high-performance backend microservices. Actively solving DSA on LeetCode (Knight badge, 450+ solved). Looking for summer SDE internships.",
+        `3rd Year B.Tech CSE student at Delhi Technological University.
+
+Current technical background and focus:
+• Competitive programming: 450+ solved algorithmic problems on LeetCode (Knight badge)
+• Building scalable backend services using Go, Docker, and PostgreSQL
+• Actively seeking Summer 2026 Software Engineering internships`,
       title: "Aspiring Backend & Cloud Engineer",
       headline: "3rd Year CSE @ DTU · Go, Docker & Microservices Enthusiast · LeetCode 450+",
       college: "Delhi Technological University (DTU)",
@@ -584,7 +605,12 @@ async function seed() {
       avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=500&auto=format&fit=crop&q=80",
       coverPhoto: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=1200&auto=format&fit=crop&q=80",
       about:
-        "Final year undergraduate in Data Science & Artificial Intelligence at IIT Roorkee. Published research intern at IIIT Delhi on model compression for edge devices. Seeking Machine Learning Engineer and Data Science roles.",
+        `Final year undergraduate in Artificial Intelligence & Data Science at IIT Roorkee.
+
+Current technical background and focus:
+• Research internship at IIIT Delhi on model compression for edge deployment
+• Hands-on experience fine-tuning open-source LLMs using PyTorch and HuggingFace
+• Looking for Machine Learning Engineer and Data Science graduate roles`,
       title: "ML Research Intern & Data Science Undergraduate",
       headline: "4th Year AI & Data Science @ IIT Roorkee · PyTorch, LLMs & MLOps",
       college: "IIT Roorkee",
@@ -616,7 +642,12 @@ async function seed() {
       avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=500&auto=format&fit=crop&q=80",
       coverPhoto: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=1200&auto=format&fit=crop&q=80",
       about:
-        "2nd Year Information Technology student at NIT Surathkal. Full stack developer who loves React, Tailwind CSS, TypeScript, and Express. Built 4 production web apps and actively contributing to open source.",
+        `2nd Year Information Technology student at NIT Surathkal.
+
+Current technical background and focus:
+• Full-stack developer with 4 shipped web applications in production
+• Daily stack: React, TypeScript, Node.js, Tailwind CSS, and MongoDB
+• Active open-source contributor to developer tooling repositories`,
       title: "Full Stack Web Developer & Open Source Contributor",
       headline: "2nd Year IT @ NIT Surathkal · React, TypeScript & Node.js Developer",
       college: "NIT Surathkal",
@@ -647,7 +678,12 @@ async function seed() {
       avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=500&auto=format&fit=crop&q=80",
       coverPhoto: "https://images.unsplash.com/photo-1531403009284-440f080d1e12?w=1200&auto=format&fit=crop&q=80",
       about:
-        "Final year student at BITS Pilani. Incoming SDE intern. Dedicated to breaking down complex behavioral and system design interview patterns to help my juniors at LinkUp prepare for placement season.",
+        `Final year undergraduate at BITS Pilani. Incoming SDE intern.
+
+Current technical background and focus:
+• Backend systems development in Java, Spring Boot, and PostgreSQL
+• System design and object-oriented design patterns enthusiast
+• Campus placement coordinator helping junior batches with mock technical rounds`,
       title: "Incoming Software Engineering Intern",
       headline: "4th Year CSE @ BITS Pilani · System Design Enthusiast · Placement Coordinator",
       college: "BITS Pilani",
@@ -703,24 +739,24 @@ async function seed() {
   }
   console.log(`Saved ${createdStudents.length} Student profiles.`);
 
-  // Attach realistic reviews from students to alumni
+  // Attach reviews
   console.log("Adding genuine student reviews to alumni...");
   const reviewsPool = [
     {
       rating: 5,
-      comment: "Aditya's 1-on-1 session on distributed caching was a game-changer. He helped me fix concurrency bottlenecks in my project that were causing race conditions. Highly recommend!",
+      comment: "Aditya's session on distributed caching was very helpful. He explained concurrency bottlenecks and lock contention clearly.",
     },
     {
       rating: 5,
-      comment: "Priya helped me tailor my machine learning resume specifically for ATS filters. Got shortlisted by two AI startups within 10 days of implementing her suggestions!",
+      comment: "Priya helped me tailor my machine learning resume specifically for ATS filters. Received callbacks shortly after.",
     },
     {
       rating: 5,
-      comment: "Rohan gave practical, no-nonsense feedback on my Go backend code. He showed me how real production dark-stores handle 10k concurrent webhooks. Invaluable session.",
+      comment: "Rohan gave practical, no-nonsense feedback on my Go backend code. Showed real-world patterns for handling webhook volume.",
     },
     {
       rating: 5,
-      comment: "Ananya broke down the STAR method for Amazon's Leadership Principles in a way that felt natural rather than rehearsed. Cracking my product internship was 100% thanks to this prep.",
+      comment: "Ananya broke down the STAR method for Amazon Leadership Principles in a way that felt natural and well-structured.",
     },
   ];
 
@@ -753,9 +789,9 @@ async function seed() {
   }
 
   // ─────────────────────────────────────────────────────────────
-  // 3. REALISTIC, HIGH-ENGAGEMENT ALUMNI POSTS
+  // 3. REALISTIC, HIGH-ENGAGEMENT POSTS (CLEAN BULLETS, NO EMOJIS)
   // ─────────────────────────────────────────────────────────────
-  console.log("Generating high-engagement posts by alumni...");
+  console.log("Generating clean, professional posts by alumni...");
 
   const aditya = createdAlumni[0];
   const priya = createdAlumni[1];
@@ -775,20 +811,23 @@ async function seed() {
       author: aditya._id,
       authorModel: "Alumni",
       content:
-        `🚀 From IIT Delhi to SWE at Google: My 3-Month System Design & DSA Blueprint for 2026
+        `From IIT Delhi to SWE at Google: My 3-Month System Design and DSA Blueprint
 
-When I was in 3rd year, I felt overwhelmed by the sheer volume of LeetCode problems and confusing YouTube guides. Here is the exact strategy that actually translated to FAANG offers:
+When preparing for Tier-1 engineering roles, problem volume matters far less than structural depth. Here is the exact phased approach I recommend:
 
-1️⃣ Month 1 - Patterns over Volume:
-Stop grinding 500 random problems. Focus on the core 14 patterns: Two Pointers, Sliding Window, Fast & Slow Pointers, Monotonic Stack, Top-K Elements, and Topological Sort. Master 5 problems per pattern.
+Month 1 - Pattern Mastery:
+• Focus on foundational patterns: Two Pointers, Sliding Window, Monotonic Stacks, and Topological Sort
+• Solve 5 representative problems per pattern rather than grinding random problem lists
 
-2️⃣ Month 2 - Concurrency & Low-Level Design (LLD):
-Modern SDE-1 interviews heavily test OOP principles, design patterns (Strategy, Factory, Observer), and threading. Build a Rate Limiter or a Parking Lot from scratch with thread safety.
+Month 2 - Concurrency & Low-Level Design (LLD):
+• Implement core object-oriented patterns in code: Strategy, Observer, Factory, and State
+• Build thread-safe systems from scratch: Rate Limiter, Parking Lot, and In-Memory Cache
 
-3️⃣ Month 3 - Distributed Fundamentals:
-Learn why Kafka outperforms traditional message brokers, how consistent hashing prevents cache stampedes, and how write-ahead logs guarantee ACID compliance.
+Month 3 - Distributed Fundamentals:
+• Study partitioning strategies, consistent hashing, write-ahead logs, and quorum reads
+• Compare Kafka and traditional message brokers under high consumer backpressure
 
-Drop your questions in the comments! Happy to review 5 student resumes this week 👇`,
+Feel free to post questions in the comments below.`,
       image: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=1000&auto=format&fit=crop&q=80",
       media: [
         {
@@ -809,13 +848,13 @@ Drop your questions in the comments! Happy to review 5 student resumes this week
         {
           author: studentA._id,
           authorModel: "Student",
-          content: "This roadmap is gold Aditya sir! Would love to know if you recommend starting with C++ or Go for LLD practice?",
+          content: "Very clear roadmap. Would you recommend starting with C++ or Go for LLD practice?",
           createdAt: new Date(Date.now() - 1000 * 60 * 60 * 14),
         },
         {
           author: aditya._id,
           authorModel: "Alumni",
-          content: "@Arjun Either works great, but C++ or Java will teach you memory and concurrency locks deeper. Go is fantastic once you know the fundamentals!",
+          content: "Either works well, but Java or C++ makes memory models and locks very explicit. Go is excellent once fundamentals are clear.",
           createdAt: new Date(Date.now() - 1000 * 60 * 60 * 10),
         },
       ],
@@ -825,18 +864,21 @@ Drop your questions in the comments! Happy to review 5 student resumes this week
       author: priya._id,
       authorModel: "Alumni",
       content:
-        `🤖 What they DON'T teach in college about Machine Learning in Production:
+        `Key Differences Between Academic ML and Production Machine Learning at Scale:
 
-In college, ML is 90% modeling and 10% data: downloading a clean CSV, running \`model.fit()\`, and reporting 98% accuracy.
+In university courses, machine learning is often treated as model selection on static datasets.
 
-In enterprise production at Microsoft:
-• 80% is Data Hygiene & Pipeline Orchestration: Handling schema drift, poisoned labels, and real-time streaming feature stores.
-• 15% is Inference Optimization: Quantization (AWQ/GPTQ), KV-cache pruning, speculative decoding, and minimizing TTFT (Time to First Token).
-• Only 5% is pure model tuning!
+In enterprise production environments:
+• 80% is Data Hygiene & Pipelines: Managing schema drift, handling corrupted inputs, and operating real-time feature stores
+• 15% is Inference Optimization: Quantization (AWQ/GPTQ), speculative decoding, and minimizing Time to First Token (TTFT)
+• Only 5% is pure hyperparameter tuning
 
-If you want your ML resume to stand out: stop building generic Titanic/Iris classifiers. Build an end-to-end RAG system with hybrid vector search (Dense + BM25), semantic caching in Redis, and automated evaluation metrics (ROUGE/BERTScore).
+To build a standout portfolio:
+• Build end-to-end RAG systems with hybrid vector search (Dense + BM25)
+• Implement semantic caching layers using Redis to cut LLM inference costs
+• Incorporate automated evaluation benchmarks (ROUGE, BERTScore, latency percentiles)
 
-I am sharing our internal open-source benchmark guide for students in the Academics tab!`,
+I will be covering these architecture patterns in upcoming LinkUp sessions.`,
       image: "https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?w=1000&auto=format&fit=crop&q=80",
       media: [
         {
@@ -856,7 +898,7 @@ I am sharing our internal open-source benchmark guide for students in the Academ
         {
           author: studentB._id,
           authorModel: "Student",
-          content: "Spot on ma'am! Working on semantic chunking right now and realizing how tricky edge-case parsing can be.",
+          content: "Very practical advice. Working on semantic chunking right now and seeing the real-world trade-offs.",
           createdAt: new Date(Date.now() - 1000 * 60 * 60 * 18),
         },
       ],
@@ -866,20 +908,21 @@ I am sharing our internal open-source benchmark guide for students in the Academ
       author: rohan._id,
       authorModel: "Alumni",
       content:
-        `⚡ How we scaled Zepto's live order-tracking to 500,000+ orders/day without breaking our AWS budget:
+        `Architecture Decisions for Real-Time High Concurrency: Lessons from Zepto
 
-When deliveries happen in 10 minutes, every second of socket disconnect matters. Here are 3 architecture decisions that saved us millions in server compute:
+When orders need reliable sub-second status updates, standard HTTP polling quickly degrades under load. Here are three architectural shifts that improved our throughput:
 
-1. WebSockets with Redis Pub/Sub:
-Direct HTTP polling is death at scale. We transitioned to stateful WebSocket clusters backed by Redis cluster channels with automatic exponential backoff.
+1. Stateful WebSocket Clusters with Redis Pub/Sub:
+• Replaced polling with long-lived WebSocket connections
+• Backed by clustered Redis channels with client-side exponential backoff
 
-2. Ephemeral Geohash Indexing:
-Instead of heavy geospatial SQL queries on PostgreSQL every 2 seconds, drivers publish lat/long updates into in-memory geohash sets with 30-second TTLs.
+2. In-Memory Geohash Indexing:
+• Drivers stream GPS updates into ephemeral in-memory sets with 30-second TTLs
+• Bypasses repetitive geospatial disk writes during peak traffic
 
-3. Zero-Allocation Go Routines:
-Replaced heavy JSON deserialization in critical path with Protocol Buffers (gRPC), cutting CPU consumption by 48%.
-
-If you're building full-stack projects: think about concurrency and memory early!`,
+3. Low-Allocation Serialization:
+• Replaced heavy JSON payload parsing with Protocol Buffers on critical paths
+• Reduced CPU utilization by over 40% on dispatch services`,
       image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1000&auto=format&fit=crop&q=80",
       media: [
         {
@@ -902,20 +945,17 @@ If you're building full-stack projects: think about concurrency and memory early
       author: ananya._id,
       authorModel: "Alumni",
       content:
-        `🎯 Cracking Product Management Interviews: The 4-step framework I teach in my 1-on-1 sessions
+        `Product Management Framework: Preparing for Case Study and Behavioral Rounds
 
-A lot of engineering students ask me: "How do I switch from tech to Product Management?"
+When transitioning from technical degrees into Product Management, common pitfalls involve reciting buzzwords without clear customer reasoning.
 
-The biggest mistake candidates make is giving purely technical answers or listing random buzzwords. At Amazon, we evaluate your Product Sense using the CIRCLES framework:
+Structured approach for interview cases:
+• Comprehend the Macro Context: Clarify the business objective and competitive landscape
+• User Segmentation: Identify specific personas and their distinct friction points
+• Problem Prioritization: Focus on the single highest-impact unmet need
+• Solution Trade-Offs: Evaluate alternatives against effort and adoption metrics using RICE
 
-1. Comprehend the Situation (What is the macro goal? Who are we competing against?)
-2. Identify the Customer (Segment users into specific personas, not 'everyone')
-3. Report Customer Needs (What is their primary unmet emotional or functional pain?)
-4. Cut through with Solutions (Brainstorm 3 diverse solutions, prioritize using RICE score)
-
-Don't memorize answers — master the thought process. 
-
-I'm opening 5 mentoring slots this Sunday on LinkUp for mock product case teardowns!`,
+Structure demonstrates product maturity far more than memorized answers. Feel free to reach out for mock interview practice on LinkUp.`,
       image: "https://images.unsplash.com/photo-1531403009284-440f080d1e12?w=1000&auto=format&fit=crop&q=80",
       media: [
         {
@@ -937,17 +977,16 @@ I'm opening 5 mentoring slots this Sunday on LinkUp for mock product case teardo
       author: karan._id,
       authorModel: "Alumni",
       content:
-        `☁️ Just helped an Indian fintech client achieve 99.999% multi-region uptime on AWS.
+        `Cloud Architecture Best Practices: Achieving Multi-Region High Availability
 
-The biggest takeaway for cloud & DevOps aspirants:
-High Availability isn't about running 100 microservices; it's about graceful degradation and automated failovers.
+High Availability in production cloud systems is less about service count and more about automated recovery mechanics.
 
-Key principles to master:
-✅ Health-check route decoupling (shallow vs deep health checks)
-✅ Infrastructure as Code (Terraform) with remote state locking in S3 + DynamoDB
-✅ Chaos Engineering (actively killing availability zones to test zero-loss traffic rerouting)
+Core principles to implement:
+• Decouple Shallow vs Deep Health Checks: Prevent false-positive container restarts during upstream database slowdowns
+• Infrastructure as Code: Maintain version-controlled Terraform modules with remote state locks
+• Automated Chaos Testing: Regularly simulate zone dropouts to verify seamless DNS failover
 
-If you're studying for your AWS Solutions Architect or CKA exam: drop your doubts below!`,
+If you are preparing for AWS Solutions Architect or CKA certifications, feel free to leave questions in the discussion.`,
       image: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1000&auto=format&fit=crop&q=80",
       media: [
         {
@@ -969,18 +1008,14 @@ If you're studying for your AWS Solutions Architect or CKA exam: drop your doubt
       author: sneha._id,
       authorModel: "Alumni",
       content:
-        `🎨 3 UX mistakes that will immediately get your design portfolio rejected in top tech companies:
+        `Product Design Portfolio Guidelines: What Evaluators Look for in Tech Hiring
 
-1. Showing only pretty UI mockups without the messy research:
-Recruiters don't hire artists; they hire problem solvers. Show why your wireframe failed in usability test #1, and how user feedback shaped iteration #3.
+When reviewing design candidates for product design teams, superficial visual artifacts are secondary to problem-solving logic.
 
-2. Ignoring Accessibility (a11y):
-If your contrast ratios are below WCAG AA guidelines, or your buttons don't have distinct active/focus states, senior designers will notice immediately.
-
-3. Lack of Business Impact metrics:
-Don't just write "Redesigned checkout page." Write: "Reduced friction in checkout flow, leading to an estimated 14% drop in cart abandonment."
-
-Feel free to ping me for portfolio reviews!`,
+Key portfolio recommendations:
+• Document the Iteration Journey: Highlight failed initial assumptions and user research findings that directed the final design
+• Adhere to WCAG Accessibility Guidelines: Maintain strict contrast ratios and well-defined interactive states
+• Quantify User Impact: Connect layout improvements to measurable outcomes like conversion rates and task completion times`,
       image: "https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?w=1000&auto=format&fit=crop&q=80",
       media: [
         {
@@ -1002,20 +1037,16 @@ Feel free to ping me for portfolio reviews!`,
       author: vikram._id,
       authorModel: "Alumni",
       content:
-        `📈 How to prepare for Quantitative Trading interviews at Goldman Sachs, Jane Street, and Citadel:
+        `Quantitative Strategy Interview Preparation: Core Focus Areas
 
-Quantitative roles are among the highest-paying in engineering, but standard DSA prep won't cut it. Here is what you need:
+Quantitative trading interviews require deep mathematical reasoning combined with efficient programming practices.
 
-1. Brainteasers & Probability Theory:
-Study "A Practical Guide to Quantitative Finance Interviews" (the green book). Master conditional probability, Markov chains, and Poisson arrival processes.
+Preparation breakdown:
+• Probability and Stochastic Processes: Master conditional expectations, Markov chains, and Poisson arrivals
+• Low-Latency C++: Understand cache lines, memory alignment, and zero-cost abstraction overhead
+• Mental Calculation Under Time Limits: Practice option payoff estimations and numerical reasoning
 
-2. Modern C++ (C++17/20):
-Deep understanding of template metaprogramming, cache lines, cache misses, SIMD instructions, and zero-overhead abstractions.
-
-3. Mental Math & Speed:
-Practice mental multiplication and option Greeks estimation under pressure.
-
-If you have a strong math/coding background and want to break into HFT/Quant, let's connect!`,
+Feel free to connect on LinkUp if you are preparing for quantitative trading and research positions.`,
       image: "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=1000&auto=format&fit=crop&q=80",
       media: [
         {
@@ -1037,16 +1068,16 @@ If you have a strong math/coding background and want to break into HFT/Quant, le
       author: meera._id,
       authorModel: "Alumni",
       content:
-        `🛡️ The Cybersecurity landscape in 2026: Why AppSec is the most in-demand security skill right now
+        `Application Security Foundations for Software Developers
 
-Companies are realizing that securing network firewalls is no longer enough when modern attacks exploit misconfigured OAuth tokens, prompt injection in AI agents, and supply-chain dependencies.
+Securing enterprise systems begins in the codebase, not just at perimeter firewalls.
 
-If you are a student exploring cyber defense:
-• Learn OWASP Top 10 like the back of your hand.
-• Participate in CTFs (Capture The Flag) on HackTheBox and TryHackMe.
-• Audit open-source GitHub repositories for hardcoded secrets and vulnerable NPM packages.
+Essential security habits for developers:
+• Understand OWASP Top 10 vulnerabilities in depth, particularly injection and broken access controls
+• Run automated dependency scanning to catch vulnerable third-party packages early
+• Implement strict least-privilege principles across OAuth token scopes and API gateways
 
-Security is not about breaking things; it's about making systems resilient by design. Proud to mentor the next generation of defenders!`,
+Security should be an integrated engineering discipline throughout the development cycle.`,
       image: "https://images.unsplash.com/photo-1563986768609-322da13575f3?w=1000&auto=format&fit=crop&q=80",
       media: [
         {
@@ -1066,14 +1097,13 @@ Security is not about breaking things; it's about making systems resilient by de
     },
   ];
 
-  // Clear previous sample posts and insert new realistic posts
-  console.log("Upserting realistic Posts into database...");
+  console.log("Upserting clean, professional Posts into database...");
   await Post.deleteMany({});
   const createdPosts = await Post.insertMany(postsData);
-  console.log(`Successfully created ${createdPosts.length} rich, realistic posts with images, tags, and comments!`);
+  console.log(`Successfully created ${createdPosts.length} posts with clean bullets and no emojis.`);
 
   // ─────────────────────────────────────────────────────────────
-  // 4. FEATURED REAL COURSES & SESSIONS BY ALUMNI
+  // 4. FEATURED REAL COURSES & SESSIONS
   // ─────────────────────────────────────────────────────────────
   console.log("Upserting featured Courses and live Sessions...");
   await Course.deleteMany({});
@@ -1134,14 +1164,15 @@ Security is not about breaking things; it's about making systems resilient by de
     {
       title: "Weekend Live Workshop: End-to-End Kubernetes & Multi-Cloud CI/CD",
       description:
-        "Interactive live workshop by AWS Principal Architect Karan Mehta. We will set up a multi-node Kubernetes cluster, deploy microservices with Helm, and configure Prometheus observability.",
+        "Interactive live workshop by AWS Principal Architect Karan Mehta. Setting up a multi-node Kubernetes cluster, deploying microservices with Helm, and configuring Prometheus observability.",
       instructor: karan._id,
       type: "workshop",
-      date: new Date(Date.now() + 1000 * 60 * 60 * 24 * 3), // 3 days from now
+      date: new Date(Date.now() + 1000 * 60 * 60 * 24 * 3),
       time: "11:00 AM IST",
       duration: 120,
       price: 499,
       originalPrice: 999,
+      isCollegePartner: true,
       totalSeats: 60,
       isApproved: true,
       isPublished: true,
@@ -1154,7 +1185,7 @@ Security is not about breaking things; it's about making systems resilient by de
         "Join Amazon Senior PM Ananya Sen for a live teardown of real product sense and execution interview questions. Interactive roleplays with enrolled participants.",
       instructor: ananya._id,
       type: "session",
-      date: new Date(Date.now() + 1000 * 60 * 60 * 24 * 5), // 5 days from now
+      date: new Date(Date.now() + 1000 * 60 * 60 * 24 * 5),
       time: "5:00 PM IST",
       duration: 90,
       price: 399,
@@ -1172,7 +1203,7 @@ Security is not about breaking things; it's about making systems resilient by de
         "Live interactive session hosted by Google Staff Engineer Aditya Verma. Live resume reviews, project critiques, and roadmap advice for 2nd, 3rd, and 4th-year engineering students.",
       instructor: aditya._id,
       type: "session",
-      date: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7), // 7 days from now
+      date: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7),
       time: "6:00 PM IST",
       duration: 90,
       price: 299,
@@ -1187,7 +1218,7 @@ Security is not about breaking things; it's about making systems resilient by de
   ];
   await Session.insertMany(sessionsData);
 
-  console.log("Seeding complete! Database is now rich with production profiles, posts, courses, and sessions.");
+  console.log("Seeding complete! Database is now rich with clean professional profiles, posts, courses, and sessions.");
   await mongoose.disconnect();
 }
 

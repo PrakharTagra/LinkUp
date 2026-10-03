@@ -5,6 +5,7 @@ import Loader from "../../components/common/Loader";
 import PostCard from "../../components/feed/PostCard";
 import PaymentModal from "../../components/academics/PaymentModal";
 import API from "../../utils/api";
+import FormattedText from "../../components/common/FormattedText.jsx";
 
 const BackIcon = () => (
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -583,9 +584,7 @@ export default function StudentAlumniProfile() {
               borderRadius: 16, padding: "20px 22px",
             }}>
               <h3 style={{ fontSize: 12, fontWeight: 700, color: "var(--text-3)", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 12 }}>About</h3>
-              <p style={{ fontSize: 14, color: "var(--text-2)", lineHeight: 1.75 }}>
-                {aboutText}
-              </p>
+              <FormattedText content={aboutText} />
             </div>
 
             <div style={{

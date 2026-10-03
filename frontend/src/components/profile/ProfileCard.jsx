@@ -1,6 +1,7 @@
 import React, { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ImageCropper from "./ImageCropper";
+import FormattedText from "../common/FormattedText.jsx";
 
 const EditIcon = () => (
   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -343,7 +344,7 @@ export default function ProfileCard({ user = {}, onEdit, onAvatarChange, onCover
         {user.about && (
           <div style={{ marginBottom: 16 }}>
             <h3 style={{ fontSize: 12, fontWeight: 700, color: "var(--text-3)", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 8 }}>About</h3>
-            <p style={{ fontSize: 14, color: "var(--text-2)", lineHeight: 1.7 }}>{user.about}</p>
+            <FormattedText content={user.about} />
           </div>
         )}
 

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import FormattedText from "../common/FormattedText.jsx";
 
 // ── Add this helper component at the top of PostCard.jsx ────
 const AIFlagBadge = ({ flag }) => {
@@ -226,7 +227,7 @@ export default function PostCard({ post, onOpenProfile }) {
 
       {/* Content */}
       {post.content && (
-        <p style={{ fontSize: 14, color: "var(--text-2)", lineHeight: 1.7, marginBottom: 12 }}>{post.content}</p>
+        <FormattedText content={post.content} style={{ marginBottom: 14 }} />
       )}
 
       {/* Certificate block */}
