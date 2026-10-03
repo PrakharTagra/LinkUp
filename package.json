@@ -1,0 +1,10 @@
+{
+  "name": "linkup",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "postinstall": "npm --prefix backend install",
+    "start": "node backend/index.js",
+    "build": "npm --prefix backend install"
+  }
+}
