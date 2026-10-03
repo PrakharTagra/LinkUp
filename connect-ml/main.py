@@ -25,7 +25,7 @@ from pydantic import BaseModel, Field
 
 # Skill Gap imports
 from skill_gap_model import SkillGapAnalyzer
-from db_client import get_mock_portal_data, get_mock_student, ConnectDBClient
+from db_client import ConnectDBClient
 
 app = FastAPI(
     title="LinkUp Unified ML & Skill Gap Service",
@@ -58,7 +58,7 @@ else:
     df["skills_required"] = df["skills_required"].fillna(df.get("skills_list", "")).fillna("")
 
 embeddings = np.load(embeddings_path)
-print(f"Ready: {len(df)} jobs and embeddings loaded.")
+print(f"Ready: {len(df)} production jobs and embeddings loaded.")
 
 VALID_DOMAINS = [
     "Software Engineering",
@@ -80,29 +80,22 @@ ROADMAP_STAGES = [
 ]
 
 # ── Skill Gap Analyzer Initialization ──────────────────────────────────────
-print("Initializing Skill Gap Analyzer...")
-default_postings_csv = BASE_DIR / "data" / "sample_job_postings.csv"
-if not default_postings_csv.exists():
-    default_postings_csv = BASE_DIR / "data" / "job_skills.csv"
-
+print("Initializing Skill Gap Analyzer with production dataset...")
+default_postings_csv = jobs_csv_path
 MONGO_URI = os.getenv("MONGO_URI")
 DB_NAME = os.getenv("DB_NAME", "test")
-USE_MOCK = os.getenv("USE_MOCK_DATA", "false").lower() in ("true", "1", "yes")
 
-if USE_MOCK or not MONGO_URI:
-    portal_data = get_mock_portal_data()
-    print("Skill Gap: Using mock portal data")
-else:
+portal_data = {"courses": [], "sessions": [], "workshops": [], "alumnis": []}
+if MONGO_URI:
     try:
         db_client = ConnectDBClient(MONGO_URI, DB_NAME)
         portal_data = db_client.get_portal_data()
         db_client.close()
-        print(f"Skill Gap: Loaded portal data from MongoDB ({DB_NAME})")
+        print(f"Skill Gap: Connected to live MongoDB ({DB_NAME})")
     except Exception as e:
-        print(f"Skill Gap DB warning: {e}. Falling back to mock data.")
-        portal_data = get_mock_portal_data()
+        print(f"Skill Gap DB Notice: {e}. Live portal content will sync on request.")
 
-skill_analyzer = SkillGapAnalyzer(str(default_postings_csv), portal_data, max_postings_rows=15000)
+skill_analyzer = SkillGapAnalyzer(str(default_postings_csv), portal_data, max_postings_rows=15058)
 print("Skill Gap Analyzer ready.")
 
 gc.collect()
@@ -396,14 +389,17 @@ async def skill_gap_analyze(request: Request):
         except Exception as e:
             print("Skill gap DB lookup error:", e)
 
-    if not student:
-        student = get_mock_student()
+    if not student or not isinstance(student, dict):
+        raise HTTPException(
+            status_code=400,
+            detail="Student profile data or valid student_id is required for Skill Gap analysis."
+        )
 
     domains = body.get("domains", [])
     result = skill_analyzer.analyze(student, target_domains=domains)
     result["meta"] = {
         "service": "unified-ml",
-        "data_source": "dataset",
+        "data_source": "live-db" if MONGO_URI else "dataset",
     }
     return result
 
@@ -440,15 +436,21 @@ async def skill_gap_learning_path(request: Request):
 
 @app.post("/api/skill-gap/batch-analyze")
 def skill_gap_batch_analyze():
-    if MONGO_URI and not USE_MOCK:
+    students = []
+    if MONGO_URI:
         try:
             client = ConnectDBClient(MONGO_URI, DB_NAME)
             students = client.get_all_students()
             client.close()
-        except Exception:
-            students = [get_mock_student()]
-    else:
-        students = [get_mock_student()]
+        except Exception as e:
+            print("Batch analyze DB query notice:", e)
+
+    if not students:
+        return {
+            "total_students": 0,
+            "analyses": [],
+            "common_gaps": [],
+        }
 
     results = []
     for student in students[:50]:

@@ -5,6 +5,7 @@ import Course from '../models/Course.js';
 import Session from '../models/Session.js';
 import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
+import crypto from "crypto";
 import {
   findUserByEmail,
   findUserById,
@@ -172,7 +173,7 @@ export const googleAuth = async (req, res) => {
           email,
           avatar,
           role: role || "student",
-          password: Math.random().toString(36).slice(-8), // random dummy password
+          password: crypto.randomBytes(32).toString("hex"),
        });
     }
 
