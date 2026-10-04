@@ -167,10 +167,7 @@ export default function Signup() {
   const handleSendOTP = async () => {
     try {
       setOtpLoading(true); setOtpError("");
-      const res = await API.post("/auth/send-otp", { email: form.email });
-      if (res.data?.otp) {
-        setOtpCode(res.data.otp);
-      }
+      await API.post("/auth/send-otp", { email: form.email });
       startResendTimer();
     } catch (err) {
       setOtpError(err.response?.data?.message || "Failed to send OTP. Please try again.");
@@ -200,10 +197,8 @@ export default function Signup() {
         // Send OTP and go to OTP step
         try {
           setLoading(true);
-          const res = await API.post("/auth/send-otp", { email: form.email });
-          if (res.data?.otp) {
-            setOtpCode(res.data.otp);
-          }
+          await API.post("/auth/send-otp", { email: form.email });
+          setOtpCode(""); // User will type the real code from email
           startResendTimer();
           setStep("otp");
         } catch (err) {
