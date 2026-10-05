@@ -306,27 +306,27 @@ export default function Landing() {
         initial={{ y: -80, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.65, ease: [0.22, 0.68, 0, 1.1] }}
-        style={{ position: "sticky", top: 0, zIndex: 50, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 clamp(16px, 4vw, 48px)", height: 64, background: "rgba(8,9,14,0.78)", backdropFilter: "blur(24px)", borderBottom: "1px solid rgba(255,255,255,0.07)" }}
+        style={{ position: "sticky", top: 0, zIndex: 50, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 clamp(12px, 3vw, 48px)", height: 60, width: "100%", maxWidth: "100vw", boxSizing: "border-box", background: "rgba(8,9,14,0.78)", backdropFilter: "blur(24px)", borderBottom: "1px solid rgba(255,255,255,0.07)" }}
       >
-        <motion.div style={{ display: "flex", alignItems: "center", gap: 10 }} whileHover={{ scale: 1.03 }}>
+        <motion.div style={{ display: "flex", alignItems: "center", gap: 8 }} whileHover={{ scale: 1.03 }}>
           <img
             src={connectLogo}
             alt="LinkUp"
-            style={{ height: 36, width: "auto", objectFit: "contain", mixBlendMode: "screen" }}
+            style={{ height: 32, width: "auto", objectFit: "contain", mixBlendMode: "screen", flexShrink: 0 }}
           />
           <div style={{ display: "flex", flexDirection: "column", lineHeight: 1.2 }}>
-            <span style={{ fontFamily: "Plus Jakarta Sans", fontWeight: 800, fontSize: 21, letterSpacing: "-0.03em", color: "#FFFFFF" }}>LinkUp</span>
-            <span style={{ fontFamily: "DM Sans", fontWeight: 700, fontSize: 8.5, letterSpacing: "0.12em", color: "rgba(255,255,255,0.45)", marginTop: 1, textTransform: "uppercase", whiteSpace: "nowrap", paddingLeft: 1 }}>LEARN·MENTOR·SUCCEED</span>
+            <span style={{ fontFamily: "Plus Jakarta Sans", fontWeight: 800, fontSize: "clamp(18px, 4vw, 21px)", letterSpacing: "-0.03em", color: "#FFFFFF" }}>LinkUp</span>
+            <span className="desktop-only" style={{ fontFamily: "DM Sans", fontWeight: 700, fontSize: 8.5, letterSpacing: "0.12em", color: "rgba(255,255,255,0.45)", marginTop: 1, textTransform: "uppercase", whiteSpace: "nowrap", paddingLeft: 1 }}>LEARN·MENTOR·SUCCEED</span>
           </div>
         </motion.div>
         <motion.div style={{ display: "flex", gap: 8 }} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }}>
-          <MagneticBtn className="btn-ghost" style={{ padding: "7px 14px", fontSize: 13 }} onClick={() => navigate("/login")}>Log in</MagneticBtn>
-          <MagneticBtn className="btn-purple" style={{ padding: "7px 16px", fontSize: 13 }} onClick={() => navigate("/signup")}>Get Started →</MagneticBtn>
+          <MagneticBtn className="btn-ghost" style={{ padding: "6px 12px", fontSize: 13 }} onClick={() => navigate("/login")}>Log in</MagneticBtn>
+          <MagneticBtn className="btn-purple" style={{ padding: "6px 14px", fontSize: 13 }} onClick={() => navigate("/signup")}>Get Started →</MagneticBtn>
         </motion.div>
       </motion.nav>
 
       {/* ──────────────── HERO ──────────────── */}
-      <motion.section style={{ position: "relative", zIndex: 1, textAlign: "center", padding: "80px 24px 64px" }}>
+      <motion.section style={{ position: "relative", zIndex: 1, textAlign: "center", padding: "clamp(48px, 8vw, 80px) clamp(14px, 4vw, 24px) 48px" }}>
         <motion.div
           initial={{ opacity: 0, scale: 0.6, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.2, ease: [0.22, 0.68, 0, 1.2] }}
           style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "6px 16px", borderRadius: 100, background: "rgba(124,92,252,0.12)", border: "1px solid rgba(124,92,252,0.3)", marginBottom: 28, color: "var(--purple-light)", fontSize: 13, fontWeight: 600 }}
@@ -337,43 +337,43 @@ export default function Landing() {
 
         <motion.h1
           initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.75, delay: 0.35, ease: [0.22, 0.68, 0, 1.05] }}
-          style={{ fontFamily: "Plus Jakarta Sans", fontWeight: 800, fontSize: "clamp(40px, 7.5vw, 80px)", lineHeight: 1.06, marginBottom: 12, letterSpacing: "-0.03em" }}
+          style={{ fontFamily: "Plus Jakarta Sans", fontWeight: 800, fontSize: "clamp(32px, 7vw, 80px)", lineHeight: 1.08, marginBottom: 12, letterSpacing: "-0.03em" }}
         >
           Bridge the Gap Between<br />
           <span className="grad-text">You &</span>{" "}
           <Typewriter words={["Your Future.", "Your Mentor.", "Your Career.", "Your Network."]} />
         </motion.h1>
 
-        <motion.p initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.65, delay: 0.55 }} style={{ fontSize: 17, color: "var(--text-2)", maxWidth: 520, margin: "0 auto 38px", lineHeight: 1.75 }}>
+        <motion.p initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.65, delay: 0.55 }} style={{ fontSize: 16, color: "var(--text-2)", maxWidth: 520, margin: "0 auto 34px", lineHeight: 1.75 }}>
           LinkUp with verified alumni, get mentorship, join live sessions, and unlock your career — all in one platform.
         </motion.p>
 
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.7 }} style={{ display: "flex", gap: 14, justifyContent: "center", flexWrap: "wrap", marginBottom: 64 }}>
-          <MagneticBtn className="btn-purple" style={{ fontSize: 15, padding: "14px 32px" }} onClick={() => navigate("/signup", { state: { role: "student" } })}>Start as Student</MagneticBtn>
-          <MagneticBtn className="btn-outline-purple" style={{ fontSize: 15, padding: "13px 32px" }} onClick={() => navigate("/signup", { state: { role: "alumni" } })}>Join as Alumni</MagneticBtn>
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.7 }} style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap", marginBottom: 54 }}>
+          <MagneticBtn className="btn-purple" style={{ fontSize: 15, padding: "12px 28px" }} onClick={() => navigate("/signup", { state: { role: "student" } })}>Start as Student</MagneticBtn>
+          <MagneticBtn className="btn-outline-purple" style={{ fontSize: 15, padding: "11px 28px" }} onClick={() => navigate("/signup", { state: { role: "alumni" } })}>Join as Alumni</MagneticBtn>
         </motion.div>
 
         {/* ORBIT VISUAL */}
-        <motion.div initial={{ opacity: 0, scale: 0.5 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1.1, delay: 0.9, ease: [0.22, 0.68, 0, 1.1] }} style={{ position: "relative", width: "min(360px, calc(100vw - 48px))", height: 360, margin: "0 auto 68px", maxWidth: "100%" }}>
+        <motion.div initial={{ opacity: 0, scale: 0.5 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1.1, delay: 0.9, ease: [0.22, 0.68, 0, 1.1] }} style={{ position: "relative", width: "min(340px, calc(100vw - 32px))", height: 340, margin: "0 auto 56px", maxWidth: "100%" }}>
           {/* Center hub — actual logo */}
           <motion.div
             animate={{ boxShadow: ["0 0 40px rgba(0,180,255,0.3)", "0 0 90px rgba(0,180,255,0.6)", "0 0 40px rgba(0,180,255,0.3)"] }}
             transition={{ duration: 3.5, repeat: Infinity }}
-            style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%,-50%)", width: 84, height: 84, borderRadius: 22, background: "rgba(8,9,14,0.9)", border: "1px solid rgba(79,200,255,0.3)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 5, overflow: "hidden" }}
+            style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%,-50%)", width: 80, height: 80, borderRadius: 22, background: "rgba(8,9,14,0.9)", border: "1px solid rgba(79,200,255,0.3)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 5, overflow: "hidden" }}
           >
-            <img src={connectLogo} alt="LinkUp" style={{ width: 70, height: 70, objectFit: "contain", mixBlendMode: "screen" }} />
+            <img src={connectLogo} alt="LinkUp" style={{ width: 66, height: 66, objectFit: "contain", mixBlendMode: "screen" }} />
           </motion.div>
 
-          <OrbitRing radius={95}  duration={9}  color="rgba(124,92,252,1)" dotSize={10} badgeIcon={<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>} />
-          <OrbitRing radius={148} duration={15} color="rgba(0,229,195,1)"  dotSize={8}  badgeIcon={<IconDiamond />} reverse />
-          <OrbitRing radius={172} duration={24} color="rgba(255,112,67,0.7)" dotSize={6} badgeIcon={<IconVerified />} />
+          <OrbitRing radius={90}  duration={9}  color="rgba(124,92,252,1)" dotSize={10} badgeIcon={<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>} />
+          <OrbitRing radius={135} duration={15} color="rgba(0,229,195,1)"  dotSize={8}  badgeIcon={<IconDiamond />} reverse />
+          <OrbitRing radius={160} duration={24} color="rgba(255,112,67,0.7)" dotSize={6} badgeIcon={<IconVerified />} />
 
-          <motion.div animate={{ y: [0, -10, 0] }} transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }} style={{ position: "absolute", top: "4%", right: "-4%", padding: "8px 14px", borderRadius: 12, background: "rgba(14,15,24,0.92)", backdropFilter: "blur(10px)", border: "1px solid rgba(0,229,195,0.3)", zIndex: 10, display: "flex", alignItems: "center", gap: 8 }}>
+          <motion.div animate={{ y: [0, -10, 0] }} transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }} style={{ position: "absolute", top: "4%", right: "0%", padding: "7px 12px", borderRadius: 12, background: "rgba(14,15,24,0.92)", backdropFilter: "blur(10px)", border: "1px solid rgba(0,229,195,0.3)", zIndex: 10, display: "flex", alignItems: "center", gap: 8 }}>
             <div style={{ width: 8, height: 8, borderRadius: "50%", background: "var(--teal)" }} />
             <span style={{ fontSize: 12, fontWeight: 700, color: "var(--teal)" }}>3,500+ Alumni</span>
           </motion.div>
 
-          <motion.div animate={{ y: [0, 10, 0] }} transition={{ duration: 4.2, repeat: Infinity, ease: "easeInOut", delay: 1.5 }} style={{ position: "absolute", bottom: "4%", left: "-4%", padding: "8px 14px", borderRadius: 12, background: "rgba(14,15,24,0.92)", backdropFilter: "blur(10px)", border: "1px solid rgba(255,112,67,0.3)", zIndex: 10, display: "flex", alignItems: "center", gap: 8 }}>
+          <motion.div animate={{ y: [0, 10, 0] }} transition={{ duration: 4.2, repeat: Infinity, ease: "easeInOut", delay: 1.5 }} style={{ position: "absolute", bottom: "4%", left: "0%", padding: "7px 12px", borderRadius: 12, background: "rgba(14,15,24,0.92)", backdropFilter: "blur(10px)", border: "1px solid rgba(255,112,67,0.3)", zIndex: 10, display: "flex", alignItems: "center", gap: 8 }}>
             <IconLightning />
             <span style={{ fontSize: 12, fontWeight: 700, color: "var(--orange)" }}>Membership Perks</span>
           </motion.div>

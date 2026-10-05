@@ -222,13 +222,16 @@ export default function Navbar({ onToggleSidebar }) {
       WebkitBackdropFilter: "blur(20px)",
       borderBottom: "1px solid rgba(255,255,255,0.07)",
       display: "flex", alignItems: "center", justifyContent: "space-between",
-      padding: "0 14px",
+      padding: "0 clamp(10px, 2.5vw, 18px)",
       position: "sticky", top: 0, zIndex: 100,
-      gap: 10,
+      gap: 8,
+      width: "100%",
+      maxWidth: "100vw",
+      boxSizing: "border-box",
     }}>
 
       {/* Left section: mobile hamburger & logo */}
-      <div style={{ display: "flex", alignItems: "center", gap: 10, flexShrink: 0 }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
         {user && onToggleSidebar && (
           <button
             onClick={onToggleSidebar}
@@ -245,6 +248,7 @@ export default function Navbar({ onToggleSidebar }) {
               color: "var(--text)",
               cursor: "pointer",
               padding: 0,
+              flexShrink: 0,
             }}
             aria-label="Open navigation menu"
           >
@@ -261,7 +265,7 @@ export default function Navbar({ onToggleSidebar }) {
             src={connectLogo}
             alt="LinkUp"
             style={{
-              height: 34,
+              height: 32,
               width: "auto",
               objectFit: "contain",
               mixBlendMode: "screen",
@@ -270,11 +274,11 @@ export default function Navbar({ onToggleSidebar }) {
           />
           <div style={{ display: "flex", flexDirection: "column", lineHeight: 1.05 }}>
             <span style={{
-              fontFamily: "Plus Jakarta Sans", fontWeight: 800, fontSize: 20,
+              fontFamily: "Plus Jakarta Sans", fontWeight: 800, fontSize: "clamp(17px, 3.5vw, 20px)",
               letterSpacing: "-0.03em",
               color: "#FFFFFF",
             }}>LinkUp</span>
-            <span style={{
+            <span className="desktop-only" style={{
               fontFamily: "DM Sans",
               fontWeight: 700,
               fontSize: 8.5,
@@ -380,7 +384,7 @@ export default function Navbar({ onToggleSidebar }) {
 
         {/* Role badge */}
         {user?.role && (
-          <div style={{
+          <div className="desktop-only" style={{
             padding: "4px 10px", borderRadius: 99,
             background: `${accent}18`,
             border: `1px solid ${accent}40`,
@@ -421,7 +425,8 @@ export default function Navbar({ onToggleSidebar }) {
           {showNotifs && (
             <div style={{
               position: "absolute", top: "calc(100% + 8px)", right: 0,
-              width: "min(300px, calc(100vw - 28px))",
+              width: "min(300px, calc(100vw - 24px))",
+              maxWidth: "calc(100vw - 24px)",
               background: "var(--bg-3)",
               border: "1px solid var(--border)",
               borderRadius: 14,
@@ -492,7 +497,7 @@ export default function Navbar({ onToggleSidebar }) {
             }}>
               {!user?.avatar && (user?.name || "U")[0].toUpperCase()}
             </div>
-            <span style={{ fontSize: 13, color: "var(--text-2)", fontWeight: 500 }}>
+            <span className="desktop-only" style={{ fontSize: 13, color: "var(--text-2)", fontWeight: 500 }}>
               {user?.name || "User"}
             </span>
           </button>
@@ -501,6 +506,7 @@ export default function Navbar({ onToggleSidebar }) {
             <div style={{
               position: "absolute", top: "calc(100% + 8px)", right: 0,
               width: 180,
+              maxWidth: "calc(100vw - 24px)",
               background: "var(--bg-3)",
               border: "1px solid var(--border)",
               borderRadius: 12,

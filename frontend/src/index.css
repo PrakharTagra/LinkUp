@@ -30,6 +30,9 @@
 html {
   scroll-behavior: auto;
   overflow-y: scroll;
+  overflow-x: hidden;
+  max-width: 100vw;
+  width: 100%;
 }
 
 body {
@@ -39,6 +42,16 @@ body {
   -webkit-font-smoothing: antialiased;
   min-height: 100vh;
   overflow-anchor: none;
+  overflow-x: hidden;
+  max-width: 100vw;
+  width: 100%;
+}
+
+#root {
+  overflow-x: hidden;
+  max-width: 100vw;
+  width: 100%;
+  min-height: 100vh;
 }
 
 h1, h2, h3, h4, h5 { font-family: 'Plus Jakarta Sans', sans-serif; }
@@ -414,19 +427,18 @@ button { cursor: pointer; font-family: 'DM Sans', sans-serif; }
 }
 /* ── Responsive utilities ── */
 .desktop-only { display: block; }
-.mobile-only { display: none; }
-
-@media (max-width: 900px) {
-  .desktop-only { display: none !important; }
-  .mobile-only { display: block !important; }
-}
+.desktop-flex { display: flex; }
+.mobile-only { display: none !important; }
 
 @media (max-width: 768px) {
+  .desktop-only { display: none !important; }
+  .desktop-flex { display: none !important; }
+  .mobile-only { display: flex !important; }
   .hidden-mobile { display: none !important; }
   
   /* Ensure container paddings don't blow out on mobile screens */
   .main-content-pad {
-    padding: 0 14px !important;
+    padding: 0 12px !important;
   }
 
   /* Make grid 2 collapse cleanly to 1 column on tablets and mobiles */
@@ -434,15 +446,26 @@ button { cursor: pointer; font-family: 'DM Sans', sans-serif; }
     grid-template-columns: 1fr !important;
   }
 
-  /* Ensure inputs and buttons have minimum touch target (44px) */
-  button, input, select, textarea {
-    font-size: 14px !important;
+  .chat-widget-fab {
+    bottom: 20px !important;
+    right: 16px !important;
+    width: 48px !important;
+    height: 48px !important;
+  }
+
+  .chat-widget-panel {
+    bottom: 80px !important;
+    right: 12px !important;
+    left: 12px !important;
+    width: auto !important;
+    max-width: none !important;
+    max-height: calc(100vh - 110px) !important;
   }
 }
 
 @media (max-width: 480px) {
   .main-content-pad {
-    padding: 0 10px !important;
+    padding: 0 8px !important;
   }
 }
 
@@ -478,51 +501,6 @@ button { cursor: pointer; font-family: 'DM Sans', sans-serif; }
 @keyframes slideDrawer {
   from { transform: translateX(-100%); }
   to   { transform: translateX(0); }
-}
-
-/* ── Mobile Tab Navigation Bar (Bottom Bar) ── */
-.mobile-bottom-bar {
-  display: none;
-}
-
-@media (max-width: 768px) {
-  .mobile-bottom-bar {
-    display: flex;
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 58px;
-    background: rgba(12, 13, 20, 0.95);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border-top: 1px solid var(--border);
-    z-index: 999;
-    align-items: center;
-    justify-content: space-around;
-    padding: 0 4px;
-    padding-bottom: env(safe-area-inset-bottom, 0px);
-  }
-
-  .main-layout-body {
-    padding-bottom: 64px !important;
-  }
-
-  .chat-widget-fab {
-    bottom: 74px !important;
-    right: 16px !important;
-    width: 48px !important;
-    height: 48px !important;
-  }
-
-  .chat-widget-panel {
-    bottom: 132px !important;
-    right: 12px !important;
-    left: 12px !important;
-    width: auto !important;
-    max-width: none !important;
-    max-height: calc(100vh - 150px) !important;
-  }
 }
 
 /* ── Chat Widget Standard Classes ── */
