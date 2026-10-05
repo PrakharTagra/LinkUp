@@ -245,9 +245,9 @@ export default function StudentProfile() {
 
         <Stats stats={stats} />
 
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
+        <div className="grid-2-resp" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
           {/* Enrolled Courses */}
-          <div style={{ padding: 20, background: "var(--bg-3)", border: "1px solid var(--border)", borderRadius: 18 }}>
+          <div style={{ padding: 18, background: "var(--bg-3)", border: "1px solid var(--border)", borderRadius: 18 }}>
             <h3 style={{ margin: 0, marginBottom: 12, fontSize: 16, fontWeight: 700 }}>Enrolled Courses</h3>
             {displayCourses.length > 0 ? displayCourses.map((ec, i) => (
               <ListItem key={i} title={ec.title || "Unknown Course"} subtitle={`Enrolled: ${ec.enrolledAt ? new Date(ec.enrolledAt).toLocaleDateString() : "Recently"}`} />
@@ -255,7 +255,7 @@ export default function StudentProfile() {
           </div>
 
           {/* Enrolled Sessions */}
-          <div style={{ padding: 20, background: "var(--bg-3)", border: "1px solid var(--border)", borderRadius: 18 }}>
+          <div style={{ padding: 18, background: "var(--bg-3)", border: "1px solid var(--border)", borderRadius: 18 }}>
             <h3 style={{ margin: 0, marginBottom: 12, fontSize: 16, fontWeight: 700 }}>Enrolled Sessions</h3>
             {displaySessions.length > 0 ? displaySessions.map((es, i) => (
               <ListItem key={i} title={es.title || "Unknown Session"} subtitle={`Date: ${es.date ? new Date(es.date).toLocaleDateString() : 'TBD'}`} />
@@ -263,9 +263,9 @@ export default function StudentProfile() {
           </div>
         </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
+        <div className="grid-2-resp" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
           {/* Connections */}
-          <div style={{ padding: 20, background: "var(--bg-3)", border: "1px solid var(--border)", borderRadius: 18 }}>
+          <div style={{ padding: 18, background: "var(--bg-3)", border: "1px solid var(--border)", borderRadius: 18 }}>
             <h3 style={{ margin: 0, marginBottom: 12, fontSize: 16, fontWeight: 700 }}>Connections ({displayConnections.length || 0})</h3>
             {displayConnections.length > 0 ? displayConnections.map((c, i) => (
               <ListItem key={i} title={c.name} subtitle={`${c.title || ""} at ${c.company || ""}`} />
@@ -273,7 +273,7 @@ export default function StudentProfile() {
           </div>
 
           {/* Skills */}
-          <div style={{ padding: 20, background: "var(--bg-3)", border: "1px solid var(--border)", borderRadius: 18 }}>
+          <div style={{ padding: 18, background: "var(--bg-3)", border: "1px solid var(--border)", borderRadius: 18 }}>
             <h3 style={{ margin: 0, marginBottom: 12, fontSize: 16, fontWeight: 700 }}>Skills</h3>
             {profile?.skills?.length > 0 ? (
               <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
@@ -287,7 +287,7 @@ export default function StudentProfile() {
           </div>
         </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
+        <div className="grid-2-resp" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
           <div style={{ padding: 20, background: "var(--bg-3)", border: "1px solid var(--border)", borderRadius: 18 }}>
             <h3 style={{ margin: 0, marginBottom: 12, fontSize: 16, fontWeight: 700 }}>Certifications</h3>
             {profile?.certifications?.length > 0 ? profile.certifications.map((cert, i) => (

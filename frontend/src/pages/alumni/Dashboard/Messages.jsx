@@ -179,14 +179,29 @@ export default function AlumniMessages() {
 
   return (
     <MainLayout>
-      <div style={{ display: "flex", height: "calc(100vh - 108px)", background: "var(--bg-3)", border: "1px solid var(--border)", borderRadius: 20, overflow: "hidden" }}>
+      <div style={{
+        display: "flex",
+        height: "calc(100vh - 120px)",
+        minHeight: 460,
+        background: "var(--bg-3)",
+        border: "1px solid var(--border)",
+        borderRadius: 20,
+        overflow: "hidden",
+        position: "relative",
+      }}>
 
-        {/* LEFT */}
-        <div style={{ width: 290, borderRight: "1px solid var(--border)", display: "flex", flexDirection: "column", flexShrink: 0 }}>
+        {/* LEFT / Conversations list */}
+        <div style={{
+          width: 290,
+          borderRight: "1px solid var(--border)",
+          display: activeChat ? "none" : "flex",
+          flexDirection: "column",
+          flexShrink: 0,
+        }} className="alumni-msg-list">
 
           <div style={{ padding: "16px 16px 12px", borderBottom: "1px solid var(--border)" }}>
             <h2 style={{ fontFamily: "Plus Jakarta Sans", fontWeight: 700, fontSize: 16, color: "var(--text)" }}>Messages</h2>
-            <p style={{ fontSize: 12, color: "var(--text-3)", marginTop: 2 }}>
+            <p style={{ fontSize: 12, color: "var(--text-3)", marginTop: 2, margin: 0 }}>
               {visibleActiveMembershipChats.length + basicChats.length} conversations
             </p>
           </div>
@@ -250,43 +265,72 @@ export default function AlumniMessages() {
           </div>
         </div>
 
-        {/* RIGHT */}
+        {/* RIGHT / Active Chat */}
         {!activeChat ? (
-          <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column", gap: 12 }}>
-            <span style={{ fontSize: 48 }}>💬</span>
+          <div style={{
+            flex: 1,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            flexDirection: "column",
+            gap: 12,
+            padding: 20,
+            textAlign: "center",
+          }} className="alumni-msg-placeholder">
+            <span style={{ fontSize: 44 }}>💬</span>
             <p style={{ color: "var(--text-3)", fontSize: 14 }}>Select a conversation</p>
           </div>
         ) : (
-          <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
+          <div style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0 }}>
 
             {/* Chat header */}
-            <div style={{ padding: "12px 18px", borderBottom: "1px solid var(--border)", display: "flex", alignItems: "center", gap: 12 }}>
+            <div style={{ padding: "10px 14px", borderBottom: "1px solid var(--border)", display: "flex", alignItems: "center", gap: 10 }}>
+              <button
+                onClick={() => setActiveChat(null)}
+                style={{
+                  background: "transparent",
+                  border: "1px solid var(--border)",
+                  borderRadius: 8,
+                  padding: "5px 8px",
+                  color: "var(--text-2)",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 4,
+                  fontSize: 12,
+                  cursor: "pointer",
+                }}
+                className="mobile-only"
+                aria-label="Back to conversations"
+              >
+                ← Back
+              </button>
+
               <div style={{ position: "relative" }}>
-                <div style={{ width: 38, height: 38, borderRadius: 11, background: activeChat.subscribed ? "linear-gradient(135deg, #FF704344, #FF9A6C44)" : "linear-gradient(135deg, #7C5CFC22, #9B7EFF22)", display: "flex", alignItems: "center", justifyContent: "center", color: activeChat.subscribed ? "var(--orange)" : "var(--purple-light)", fontWeight: 700, fontFamily: "Plus Jakarta Sans" }}>
+                <div style={{ width: 36, height: 36, borderRadius: 10, background: activeChat.subscribed ? "linear-gradient(135deg, #FF704344, #FF9A6C44)" : "linear-gradient(135deg, #7C5CFC22, #9B7EFF22)", display: "flex", alignItems: "center", justifyContent: "center", color: activeChat.subscribed ? "var(--orange)" : "var(--purple-light)", fontWeight: 700, fontFamily: "Plus Jakarta Sans", flexShrink: 0 }}>
                   {activeChat.avatar}
                 </div>
               </div>
-              <div>
+              <div style={{ minWidth: 0, flex: 1 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 7 }}>
-                  <span style={{ fontFamily: "Plus Jakarta Sans", fontWeight: 700, fontSize: 14, color: "var(--text)" }}>{activeChat.name}</span>
+                  <span style={{ fontFamily: "Plus Jakarta Sans", fontWeight: 700, fontSize: 14, color: "var(--text)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{activeChat.name}</span>
                   {activeChat.subscribed ? (
-                    <span style={{ display: "flex", alignItems: "center", gap: 3, padding: "2px 7px", borderRadius: 99, fontSize: 10, fontWeight: 700, background: "rgba(255,112,67,0.12)", color: "var(--orange)", border: "1px solid rgba(255,112,67,0.2)" }}>
+                    <span style={{ display: "flex", alignItems: "center", gap: 3, padding: "2px 7px", borderRadius: 99, fontSize: 10, fontWeight: 700, background: "rgba(255,112,67,0.12)", color: "var(--orange)", border: "1px solid rgba(255,112,67,0.2)", flexShrink: 0 }}>
                       <StarIcon /> Member
                     </span>
                   ) : (
-                    <span style={{ padding: "2px 7px", borderRadius: 99, fontSize: 10, fontWeight: 600, background: "rgba(255,255,255,0.05)", color: "var(--text-3)", border: "1px solid var(--border)" }}>Basic</span>
+                    <span style={{ padding: "2px 7px", borderRadius: 99, fontSize: 10, fontWeight: 600, background: "rgba(255,255,255,0.05)", color: "var(--text-3)", border: "1px solid var(--border)", flexShrink: 0 }}>Basic</span>
                   )}
                 </div>
               </div>
             </div>
 
-            {/* Messages */}
-            <div style={{ flex: 1, overflowY: "auto", padding: "18px 20px", display: "flex", flexDirection: "column", gap: 10 }}>
+            {/* Messages body */}
+            <div style={{ flex: 1, overflowY: "auto", padding: "14px 14px", display: "flex", flexDirection: "column", gap: 10 }}>
               {messagesLoading && <Loader text="Loading messages..." />}
 
               {currentMsgs.map((msg, i) => (
                 <div key={i} style={{ display: "flex", justifyContent: msg.sender === "me" ? "flex-end" : "flex-start" }}>
-                  <div style={{ maxWidth: "68%", padding: "10px 14px", borderRadius: msg.sender === "me" ? "16px 16px 4px 16px" : "16px 16px 16px 4px", background: msg.sender === "me" ? "linear-gradient(135deg, #7C5CFC, #9B7EFF)" : "var(--bg-4)", border: msg.sender === "me" ? "none" : "1px solid var(--border)", color: msg.sender === "me" ? "white" : "var(--text)", fontSize: 14, lineHeight: 1.5 }}>
+                  <div style={{ maxWidth: "80%", padding: "10px 14px", borderRadius: msg.sender === "me" ? "16px 16px 4px 16px" : "16px 16px 16px 4px", background: msg.sender === "me" ? "linear-gradient(135deg, #7C5CFC, #9B7EFF)" : "var(--bg-4)", border: msg.sender === "me" ? "none" : "1px solid var(--border)", color: msg.sender === "me" ? "white" : "var(--text)", fontSize: 13.5, lineHeight: 1.5 }}>
                     <p style={{ margin: 0 }}>{msg.text}</p>
                     <p style={{ fontSize: 10, opacity: 0.6, marginTop: 4, textAlign: msg.sender === "me" ? "right" : "left", margin: "4px 0 0" }}>{msg.time}</p>
                   </div>
@@ -296,23 +340,40 @@ export default function AlumniMessages() {
             </div>
 
             {/* Input */}
-            <div style={{ padding: "12px 16px", borderTop: "1px solid var(--border)", display: "flex", gap: 10, alignItems: "center" }}>
+            <div style={{ padding: "10px 14px 12px", borderTop: "1px solid var(--border)", display: "flex", gap: 8, alignItems: "center" }}>
               <input
                 type="text" value={input}
                 onChange={e => setInput(e.target.value)}
                 onKeyDown={e => e.key === "Enter" && handleSend()}
                 placeholder="Type a message…"
-                style={{ flex: 1, padding: "11px 16px", background: "var(--bg-4)", border: "1px solid var(--border)", borderRadius: 12, color: "var(--text)", fontSize: 14, outline: "none", fontFamily: "DM Sans", transition: "border-color 0.2s" }}
+                style={{ flex: 1, padding: "10px 14px", background: "var(--bg-4)", border: "1px solid var(--border)", borderRadius: 12, color: "var(--text)", fontSize: 14, outline: "none", fontFamily: "DM Sans", transition: "border-color 0.2s" }}
                 onFocus={e => e.target.style.borderColor = "var(--purple)"}
                 onBlur={e => e.target.style.borderColor = "var(--border)"}
               />
-              <button onClick={handleSend} disabled={!input.trim()} style={{ width: 42, height: 42, borderRadius: 12, background: input.trim() ? "linear-gradient(135deg, #7C5CFC, #9B7EFF)" : "var(--bg-4)", border: input.trim() ? "none" : "1px solid var(--border)", color: input.trim() ? "white" : "var(--text-3)", display: "flex", alignItems: "center", justifyContent: "center", cursor: input.trim() ? "pointer" : "not-allowed", transition: "all 0.2s", flexShrink: 0, boxShadow: input.trim() ? "0 4px 14px rgba(124,92,252,0.3)" : "none" }}>
+              <button onClick={handleSend} disabled={!input.trim()} style={{ width: 40, height: 40, borderRadius: 12, background: input.trim() ? "linear-gradient(135deg, #7C5CFC, #9B7EFF)" : "var(--bg-4)", border: input.trim() ? "none" : "1px solid var(--border)", color: input.trim() ? "white" : "var(--text-3)", display: "flex", alignItems: "center", justifyContent: "center", cursor: input.trim() ? "pointer" : "not-allowed", transition: "all 0.2s", flexShrink: 0, boxShadow: input.trim() ? "0 4px 14px rgba(124,92,252,0.3)" : "none" }}>
                 <SendIcon />
               </button>
             </div>
           </div>
         )}
       </div>
+
+      <style>{`
+        @media (min-width: 769px) {
+          .alumni-msg-list {
+            display: flex !important;
+            width: 290px !important;
+          }
+          .alumni-msg-placeholder {
+            display: flex !important;
+          }
+        }
+        @media (max-width: 768px) {
+          .alumni-msg-list {
+            width: 100% !important;
+          }
+        }
+      `}</style>
     </MainLayout>
   );
 }

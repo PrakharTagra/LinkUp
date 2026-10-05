@@ -69,7 +69,16 @@ const formatRelativeTime = (dateValue) => {
   return `${Math.floor(diffMs / day)}d ago`;
 };
 
-export default function Navbar() {
+const MenuIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="3" y1="12" x2="21" y2="12" />
+    <line x1="3" y1="6" x2="21" y2="6" />
+    <line x1="3" y1="18" x2="21" y2="18" />
+  </svg>
+);
+
+export default function Navbar({ onToggleSidebar }) {
   const { logout, user } = useAuth();
   const navigate = useNavigate();
   const [showNotifs, setShowNotifs] = useState(false);
@@ -213,49 +222,75 @@ export default function Navbar() {
       WebkitBackdropFilter: "blur(20px)",
       borderBottom: "1px solid rgba(255,255,255,0.07)",
       display: "flex", alignItems: "center", justifyContent: "space-between",
-      padding: "0 20px",
+      padding: "0 14px",
       position: "sticky", top: 0, zIndex: 100,
-      gap: 16,
+      gap: 10,
     }}>
 
-      {/* Logo */}
-      <div
-        onClick={() => navigate(user?.role === "alumni" ? "/alumni/dashboard/feed" : user?.role === "admin" ? "/admin" : "/feed")}
-        style={{ display: "flex", alignItems: "center", gap: 10, cursor: "pointer", flexShrink: 0 }}
-      >
-        <img
-          src={connectLogo}
-          alt="LinkUp"
-          style={{
-            height: 38,
-            width: "auto",
-            objectFit: "contain",
-            mixBlendMode: "screen",
-            flexShrink: 0,
-          }}
-        />
-        <div style={{ display: "flex", flexDirection: "column", lineHeight: 1.05 }}>
-          <span style={{
-            fontFamily: "Plus Jakarta Sans", fontWeight: 800, fontSize: 23,
-            letterSpacing: "-0.03em",
-            color: "#FFFFFF",
-          }}>LinkUp</span>
-          <span style={{
-            fontFamily: "DM Sans",
-            fontWeight: 700,
-            fontSize: 9,
-            letterSpacing: "0.12em",
-            color: "rgba(255,255,255,0.45)",
-            marginTop: 3,
-            paddingLeft: 1,
-            textTransform: "uppercase",
-            whiteSpace: "nowrap",
-          }}>LEARN·MENTOR·SUCCEED</span>
+      {/* Left section: mobile hamburger & logo */}
+      <div style={{ display: "flex", alignItems: "center", gap: 10, flexShrink: 0 }}>
+        {user && onToggleSidebar && (
+          <button
+            onClick={onToggleSidebar}
+            className="mobile-only"
+            style={{
+              background: "transparent",
+              border: "1px solid var(--border)",
+              borderRadius: 8,
+              width: 36,
+              height: 36,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              color: "var(--text)",
+              cursor: "pointer",
+              padding: 0,
+            }}
+            aria-label="Open navigation menu"
+          >
+            <MenuIcon />
+          </button>
+        )}
+
+        {/* Logo */}
+        <div
+          onClick={() => navigate(user?.role === "alumni" ? "/alumni/dashboard/feed" : user?.role === "admin" ? "/admin" : "/feed")}
+          style={{ display: "flex", alignItems: "center", gap: 8, cursor: "pointer", flexShrink: 0 }}
+        >
+          <img
+            src={connectLogo}
+            alt="LinkUp"
+            style={{
+              height: 34,
+              width: "auto",
+              objectFit: "contain",
+              mixBlendMode: "screen",
+              flexShrink: 0,
+            }}
+          />
+          <div style={{ display: "flex", flexDirection: "column", lineHeight: 1.05 }}>
+            <span style={{
+              fontFamily: "Plus Jakarta Sans", fontWeight: 800, fontSize: 20,
+              letterSpacing: "-0.03em",
+              color: "#FFFFFF",
+            }}>LinkUp</span>
+            <span style={{
+              fontFamily: "DM Sans",
+              fontWeight: 700,
+              fontSize: 8.5,
+              letterSpacing: "0.12em",
+              color: "rgba(255,255,255,0.45)",
+              marginTop: 2,
+              paddingLeft: 1,
+              textTransform: "uppercase",
+              whiteSpace: "nowrap",
+            }}>LEARN·MENTOR·SUCCEED</span>
+          </div>
         </div>
       </div>
 
-      {/* Search */}
-      <div ref={searchRef} style={{ flex: 1, maxWidth: 380, position: "relative" }}>
+      {/* Search (collapsible or hidden on very small devices) */}
+      <div ref={searchRef} className="desktop-only" style={{ flex: 1, maxWidth: 380, position: "relative" }}>
         <div style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", color: "var(--text-3)" }}>
           <SearchIcon />
         </div>
@@ -386,7 +421,7 @@ export default function Navbar() {
           {showNotifs && (
             <div style={{
               position: "absolute", top: "calc(100% + 8px)", right: 0,
-              width: 300,
+              width: "min(300px, calc(100vw - 28px))",
               background: "var(--bg-3)",
               border: "1px solid var(--border)",
               borderRadius: 14,

@@ -306,22 +306,22 @@ export default function Landing() {
         initial={{ y: -80, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.65, ease: [0.22, 0.68, 0, 1.1] }}
-        style={{ position: "sticky", top: 0, zIndex: 50, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 48px", height: 64, background: "rgba(8,9,14,0.78)", backdropFilter: "blur(24px)", borderBottom: "1px solid rgba(255,255,255,0.07)" }}
+        style={{ position: "sticky", top: 0, zIndex: 50, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 clamp(16px, 4vw, 48px)", height: 64, background: "rgba(8,9,14,0.78)", backdropFilter: "blur(24px)", borderBottom: "1px solid rgba(255,255,255,0.07)" }}
       >
         <motion.div style={{ display: "flex", alignItems: "center", gap: 10 }} whileHover={{ scale: 1.03 }}>
           <img
             src={connectLogo}
             alt="LinkUp"
-            style={{ height: 40, width: "auto", objectFit: "contain", mixBlendMode: "screen" }}
+            style={{ height: 36, width: "auto", objectFit: "contain", mixBlendMode: "screen" }}
           />
           <div style={{ display: "flex", flexDirection: "column", lineHeight: 1.2 }}>
-            <span style={{ fontFamily: "Plus Jakarta Sans", fontWeight: 800, fontSize: 23, letterSpacing: "-0.03em", color: "#FFFFFF" }}>LinkUp</span>
-            <span style={{ fontFamily: "DM Sans", fontWeight: 700, fontSize: 9, letterSpacing: "0.12em", color: "rgba(255,255,255,0.45)", marginTop: 1, textTransform: "uppercase", whiteSpace: "nowrap", paddingLeft: 1 }}>LEARN·MENTOR·SUCCEED</span>
+            <span style={{ fontFamily: "Plus Jakarta Sans", fontWeight: 800, fontSize: 21, letterSpacing: "-0.03em", color: "#FFFFFF" }}>LinkUp</span>
+            <span style={{ fontFamily: "DM Sans", fontWeight: 700, fontSize: 8.5, letterSpacing: "0.12em", color: "rgba(255,255,255,0.45)", marginTop: 1, textTransform: "uppercase", whiteSpace: "nowrap", paddingLeft: 1 }}>LEARN·MENTOR·SUCCEED</span>
           </div>
         </motion.div>
-        <motion.div style={{ display: "flex", gap: 12 }} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }}>
-          <MagneticBtn className="btn-ghost" style={{ padding: "8px 20px", fontSize: 14 }} onClick={() => navigate("/login")}>Log in</MagneticBtn>
-          <MagneticBtn className="btn-purple" style={{ padding: "8px 20px", fontSize: 14 }} onClick={() => navigate("/signup")}>Get Started →</MagneticBtn>
+        <motion.div style={{ display: "flex", gap: 8 }} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }}>
+          <MagneticBtn className="btn-ghost" style={{ padding: "7px 14px", fontSize: 13 }} onClick={() => navigate("/login")}>Log in</MagneticBtn>
+          <MagneticBtn className="btn-purple" style={{ padding: "7px 16px", fontSize: 13 }} onClick={() => navigate("/signup")}>Get Started →</MagneticBtn>
         </motion.div>
       </motion.nav>
 
@@ -354,7 +354,7 @@ export default function Landing() {
         </motion.div>
 
         {/* ORBIT VISUAL */}
-        <motion.div initial={{ opacity: 0, scale: 0.5 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1.1, delay: 0.9, ease: [0.22, 0.68, 0, 1.1] }} style={{ position: "relative", width: 360, height: 360, margin: "0 auto 68px" }}>
+        <motion.div initial={{ opacity: 0, scale: 0.5 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1.1, delay: 0.9, ease: [0.22, 0.68, 0, 1.1] }} style={{ position: "relative", width: "min(360px, calc(100vw - 48px))", height: 360, margin: "0 auto 68px", maxWidth: "100%" }}>
           {/* Center hub — actual logo */}
           <motion.div
             animate={{ boxShadow: ["0 0 40px rgba(0,180,255,0.3)", "0 0 90px rgba(0,180,255,0.6)", "0 0 40px rgba(0,180,255,0.3)"] }}
@@ -368,19 +368,19 @@ export default function Landing() {
           <OrbitRing radius={148} duration={15} color="rgba(0,229,195,1)"  dotSize={8}  badgeIcon={<IconDiamond />} reverse />
           <OrbitRing radius={172} duration={24} color="rgba(255,112,67,0.7)" dotSize={6} badgeIcon={<IconVerified />} />
 
-          <motion.div animate={{ y: [0, -10, 0] }} transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }} style={{ position: "absolute", top: "4%", right: "-20%", padding: "8px 14px", borderRadius: 12, background: "rgba(14,15,24,0.92)", backdropFilter: "blur(10px)", border: "1px solid rgba(0,229,195,0.3)", zIndex: 10, display: "flex", alignItems: "center", gap: 8 }}>
+          <motion.div animate={{ y: [0, -10, 0] }} transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }} style={{ position: "absolute", top: "4%", right: "-4%", padding: "8px 14px", borderRadius: 12, background: "rgba(14,15,24,0.92)", backdropFilter: "blur(10px)", border: "1px solid rgba(0,229,195,0.3)", zIndex: 10, display: "flex", alignItems: "center", gap: 8 }}>
             <div style={{ width: 8, height: 8, borderRadius: "50%", background: "var(--teal)" }} />
             <span style={{ fontSize: 12, fontWeight: 700, color: "var(--teal)" }}>3,500+ Alumni</span>
           </motion.div>
 
-          <motion.div animate={{ y: [0, 10, 0] }} transition={{ duration: 4.2, repeat: Infinity, ease: "easeInOut", delay: 1.5 }} style={{ position: "absolute", bottom: "4%", left: "-22%", padding: "8px 14px", borderRadius: 12, background: "rgba(14,15,24,0.92)", backdropFilter: "blur(10px)", border: "1px solid rgba(255,112,67,0.3)", zIndex: 10, display: "flex", alignItems: "center", gap: 8 }}>
+          <motion.div animate={{ y: [0, 10, 0] }} transition={{ duration: 4.2, repeat: Infinity, ease: "easeInOut", delay: 1.5 }} style={{ position: "absolute", bottom: "4%", left: "-4%", padding: "8px 14px", borderRadius: 12, background: "rgba(14,15,24,0.92)", backdropFilter: "blur(10px)", border: "1px solid rgba(255,112,67,0.3)", zIndex: 10, display: "flex", alignItems: "center", gap: 8 }}>
             <IconLightning />
             <span style={{ fontSize: 12, fontWeight: 700, color: "var(--orange)" }}>Membership Perks</span>
           </motion.div>
         </motion.div>
 
         {/* Stats */}
-        <motion.div variants={staggerContainer(0.1)} initial="hidden" animate="show" transition={{ delay: 1.1 }} style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 1, maxWidth: 900, margin: "0 auto", background: "var(--border)", borderRadius: 18, overflow: "hidden", border: "1px solid var(--border)" }}>
+        <motion.div variants={staggerContainer(0.1)} initial="hidden" animate="show" transition={{ delay: 1.1 }} style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))", gap: 1, maxWidth: 900, margin: "0 auto", background: "var(--border)", borderRadius: 18, overflow: "hidden", border: "1px solid var(--border)" }}>
           {[
             { to: 12000, suffix: "+", label: "Students" },
             { to: 3500,  suffix: "+", label: "Verified Alumni" },
@@ -395,17 +395,17 @@ export default function Landing() {
         </motion.div>
       </motion.section>
 
-      <div style={{ height: 1, background: "var(--border)", margin: "0 48px", position: "relative", zIndex: 1 }} />
+      <div style={{ height: 1, background: "var(--border)", margin: "0 clamp(16px, 4vw, 48px)", position: "relative", zIndex: 1 }} />
 
       {/* ──────────────── FEATURES ──────────────── */}
-      <section style={{ position: "relative", zIndex: 1, padding: "72px 48px", maxWidth: 1100, margin: "0 auto" }}>
+      <section style={{ position: "relative", zIndex: 1, padding: "72px clamp(16px, 4vw, 48px)", maxWidth: 1100, margin: "0 auto" }}>
         <Reveal style={{ textAlign: "center", marginBottom: 52 }}>
           <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.14em", color: "var(--purple-light)", textTransform: "uppercase", marginBottom: 12 }}>Everything You Need</div>
           <h2 style={{ fontFamily: "Plus Jakarta Sans", fontWeight: 800, fontSize: "clamp(28px, 4vw, 44px)" }}>
             Built for Students.<br /><span className="grad-text">Powered by Alumni.</span>
           </h2>
         </Reveal>
-        <motion.div variants={staggerContainer(0.07)} initial="hidden" whileInView="show" viewport={{ once: true, margin: "-60px" }} style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 16 }}>
+        <motion.div variants={staggerContainer(0.07)} initial="hidden" whileInView="show" viewport={{ once: true, margin: "-60px" }} style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 16 }}>
           {features.map((f, i) => (
             <motion.div key={i} variants={fadeUp}>
               <GlowCard accent={f.accent} style={{ padding: 26, height: "100%" }}>
@@ -420,10 +420,10 @@ export default function Landing() {
         </motion.div>
       </section>
 
-      <div style={{ height: 1, background: "var(--border)", margin: "0 48px", position: "relative", zIndex: 1 }} />
+      <div style={{ height: 1, background: "var(--border)", margin: "0 clamp(16px, 4vw, 48px)", position: "relative", zIndex: 1 }} />
 
       {/* ──────────────── ALUMNI SPOTLIGHT ──────────────── */}
-      <section style={{ position: "relative", zIndex: 1, padding: "72px 48px", maxWidth: 1100, margin: "0 auto" }}>
+      <section style={{ position: "relative", zIndex: 1, padding: "72px clamp(16px, 4vw, 48px)", maxWidth: 1100, margin: "0 auto" }}>
         <Reveal style={{ textAlign: "center", marginBottom: 52 }}>
           <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.14em", color: "var(--orange)", textTransform: "uppercase", marginBottom: 12 }}>Alumni Spotlight</div>
           <h2 style={{ fontFamily: "Plus Jakarta Sans", fontWeight: 800, fontSize: "clamp(26px,4vw,42px)" }}>
@@ -478,7 +478,7 @@ export default function Landing() {
       </section>
 
       {/* ──────────────── ALUMNI MEMBERSHIP SECTION ──────────────── */}
-      <section style={{ position: "relative", zIndex: 1, padding: "72px 48px", background: "var(--bg-2)", borderTop: "1px solid var(--border)", borderBottom: "1px solid var(--border)" }}>
+      <section style={{ position: "relative", zIndex: 1, padding: "72px clamp(16px, 4vw, 48px)", background: "var(--bg-2)", borderTop: "1px solid var(--border)", borderBottom: "1px solid var(--border)" }}>
         <div style={{ maxWidth: 1060, margin: "0 auto" }}>
           <Reveal style={{ textAlign: "center", marginBottom: 52 }}>
             <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.14em", color: "#F5C842", textTransform: "uppercase", marginBottom: 12 }}>New Feature</div>
@@ -491,7 +491,7 @@ export default function Landing() {
           </Reveal>
 
           {/* How it works — 2 columns */}
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24, marginBottom: 40 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 340px), 1fr))", gap: 24, marginBottom: 40 }}>
             {/* For Students */}
             <Reveal delay={0.05}>
               <GlowCard accent="#00E5C3" style={{ padding: 32, height: "100%" }}>
@@ -556,7 +556,7 @@ export default function Landing() {
       </section>
 
       {/* ──────────────── TABS ──────────────── */}
-      <section style={{ position: "relative", zIndex: 1, padding: "72px 48px", background: "var(--bg-2)", borderTop: "1px solid var(--border)", borderBottom: "1px solid var(--border)" }}>
+      <section style={{ position: "relative", zIndex: 1, padding: "72px clamp(16px, 4vw, 48px)", background: "var(--bg-2)", borderTop: "1px solid var(--border)", borderBottom: "1px solid var(--border)" }}>
         <div style={{ maxWidth: 1000, margin: "0 auto" }}>
           <Reveal style={{ textAlign: "center", marginBottom: 36 }}>
             <h2 style={{ fontFamily: "Plus Jakarta Sans", fontWeight: 800, fontSize: "clamp(26px, 4vw, 42px)", marginBottom: 24 }}>Choose Your Path</h2>
@@ -574,7 +574,7 @@ export default function Landing() {
 
           <AnimatePresence mode="wait">
             {activeTab === "student" && (
-              <motion.div key="student" initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 30 }} transition={{ duration: 0.35 }} className="glass-card" style={{ padding: 36 }}>
+              <motion.div key="student" initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 30 }} transition={{ duration: 0.35 }} className="glass-card" style={{ padding: "clamp(18px, 4vw, 36px)" }}>
                 <div style={{ display: "flex", flexWrap: "wrap", gap: 36, alignItems: "flex-start" }}>
                   <div style={{ flex: 1, minWidth: 240 }}>
                     <span className="badge-membership" style={{ marginBottom: 14, display: "inline-flex", alignItems: "center", gap: 5 }}><IconLightning /> Free to join</span>
@@ -603,7 +603,7 @@ export default function Landing() {
               </motion.div>
             )}
             {activeTab === "alumni" && (
-              <motion.div key="alumni" initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -30 }} transition={{ duration: 0.35 }} style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+              <motion.div key="alumni" initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -30 }} transition={{ duration: 0.35 }} style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 320px), 1fr))", gap: 16 }}>
                 <GlowCard accent="var(--teal)" style={{ padding: 28 }}>
                   <div style={{ marginBottom: 12, color: "var(--teal)" }}><IconSeedling /></div>
                   <h3 style={{ fontFamily: "Plus Jakarta Sans", fontWeight: 800, fontSize: 20, marginBottom: 4 }}>Simple</h3>
@@ -644,11 +644,11 @@ export default function Landing() {
       </section>
 
       {/* ──────────────── COLLEGE TIE-UPS ──────────────── */}
-      <section style={{ position: "relative", zIndex: 1, padding: "72px 48px", maxWidth: 1060, margin: "0 auto" }}>
+      <section style={{ position: "relative", zIndex: 1, padding: "72px clamp(16px, 4vw, 48px)", maxWidth: 1060, margin: "0 auto" }}>
         <Reveal>
           <div style={{ borderRadius: 22, overflow: "hidden", position: "relative", background: "linear-gradient(135deg,#0F1018 0%,#14151F 50%,#0F1018 100%)", border: "1px solid var(--border)" }}>
             <motion.div animate={{ x: ["-100%","100%"] }} transition={{ duration: 6, repeat: Infinity, ease: "linear", repeatDelay: 3 }} style={{ height: 3, width: "100%", background: "linear-gradient(90deg,transparent,var(--purple),var(--orange),var(--teal),transparent)" }} />
-            <div style={{ padding: "40px 44px", display: "flex", gap: 44, flexWrap: "wrap", alignItems: "center" }}>
+            <div style={{ padding: "clamp(24px, 4vw, 40px) clamp(16px, 4vw, 44px)", display: "flex", gap: "clamp(20px, 4vw, 44px)", flexWrap: "wrap", alignItems: "center" }}>
               <div style={{ flex: 2, minWidth: 280 }}>
                 <span className="badge-college" style={{ marginBottom: 14, display: "inline-flex", alignItems: "center", gap: 6 }}><IconCollege /> College Partnerships</span>
                 <h2 style={{ fontFamily: "Plus Jakarta Sans", fontWeight: 800, fontSize: "clamp(22px,3.5vw,32px)", marginBottom: 14, lineHeight: 1.2 }}>
@@ -682,7 +682,7 @@ export default function Landing() {
       </section>
 
       {/* ──────────────── HOW IT WORKS ──────────────── */}
-      <section style={{ position: "relative", zIndex: 1, padding: "72px 48px", background: "var(--bg-2)", borderTop: "1px solid var(--border)", borderBottom: "1px solid var(--border)" }}>
+      <section style={{ position: "relative", zIndex: 1, padding: "72px clamp(16px, 4vw, 48px)", background: "var(--bg-2)", borderTop: "1px solid var(--border)", borderBottom: "1px solid var(--border)" }}>
         <div style={{ maxWidth: 1060, margin: "0 auto" }}>
           <Reveal style={{ textAlign: "center", marginBottom: 52 }}>
             <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.14em", color: "var(--teal)", textTransform: "uppercase", marginBottom: 12 }}>Simple Process</div>
@@ -711,7 +711,7 @@ export default function Landing() {
       </section>
 
       {/* ──────────────── TESTIMONIALS ──────────────── */}
-      <section style={{ position: "relative", zIndex: 1, padding: "72px 48px" }}>
+      <section style={{ position: "relative", zIndex: 1, padding: "72px clamp(16px, 4vw, 48px)" }}>
         <div style={{ maxWidth: 1060, margin: "0 auto" }}>
           <Reveal style={{ textAlign: "center", marginBottom: 52 }}>
             <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.14em", color: "var(--purple-light)", textTransform: "uppercase", marginBottom: 12 }}>Real Stories</div>
@@ -750,10 +750,10 @@ export default function Landing() {
         </div>
       </section>
 
-      <div style={{ height: 1, background: "var(--border)", margin: "0 48px", position: "relative", zIndex: 1 }} />
+      <div style={{ height: 1, background: "var(--border)", margin: "0 clamp(16px, 4vw, 48px)", position: "relative", zIndex: 1 }} />
 
       {/* ──────────────── FAQ ──────────────── */}
-      <section style={{ position: "relative", zIndex: 1, padding: "72px 48px", background: "var(--bg-2)", borderTop: "1px solid var(--border)", borderBottom: "1px solid var(--border)" }}>
+      <section style={{ position: "relative", zIndex: 1, padding: "72px clamp(16px, 4vw, 48px)", background: "var(--bg-2)", borderTop: "1px solid var(--border)", borderBottom: "1px solid var(--border)" }}>
         <div style={{ maxWidth: 760, margin: "0 auto" }}>
           <Reveal style={{ textAlign: "center", marginBottom: 52 }}>
             <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.14em", color: "var(--orange)", textTransform: "uppercase", marginBottom: 12 }}>Got Questions?</div>
@@ -776,7 +776,7 @@ export default function Landing() {
       </section>
 
       {/* ──────────────── CAREER OUTCOMES ──────────────── */}
-      <section style={{ position: "relative", zIndex: 1, padding: "72px 48px", maxWidth: 1100, margin: "0 auto" }}>
+      <section style={{ position: "relative", zIndex: 1, padding: "72px clamp(16px, 4vw, 48px)", maxWidth: 1100, margin: "0 auto" }}>
         <Reveal style={{ textAlign: "center", marginBottom: 52 }}>
           <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.14em", color: "var(--teal)", textTransform: "uppercase", marginBottom: 12 }}>Proven Impact</div>
           <h2 style={{ fontFamily: "Plus Jakarta Sans", fontWeight: 800, fontSize: "clamp(26px,4vw,42px)" }}>
@@ -820,7 +820,7 @@ export default function Landing() {
       </section>
 
       {/* ──────────────── FINAL CTA ──────────────── */}
-      <section style={{ position: "relative", zIndex: 1, padding: "90px 48px 110px", textAlign: "center", overflow: "hidden" }}>
+      <section style={{ position: "relative", zIndex: 1, padding: "clamp(60px, 8vw, 90px) clamp(16px, 4vw, 48px) clamp(70px, 10vw, 110px)", textAlign: "center", overflow: "hidden" }}>
         <motion.div animate={{ scale: [1, 1.25, 1], opacity: [0.12, 0.32, 0.12] }} transition={{ duration: 5.5, repeat: Infinity }} style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%,-50%)", width: 600, height: 600, borderRadius: "50%", background: "radial-gradient(circle,rgba(124,92,252,0.32) 0%,transparent 70%)", pointerEvents: "none" }} />
         <Reveal>
           <motion.h2 style={{ fontFamily: "Plus Jakarta Sans", fontWeight: 800, fontSize: "clamp(34px,5.5vw,60px)", marginBottom: 16, position: "relative" }}>
@@ -837,7 +837,7 @@ export default function Landing() {
       </section>
 
       {/* ──────────────── FOOTER ──────────────── */}
-      <footer style={{ borderTop: "1px solid var(--border)", padding: "20px 48px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12, position: "relative", zIndex: 1, background: "rgba(8,9,14,0.6)", backdropFilter: "blur(20px)" }}>
+      <footer style={{ borderTop: "1px solid var(--border)", padding: "20px clamp(16px, 4vw, 48px)", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12, position: "relative", zIndex: 1, background: "rgba(8,9,14,0.6)", backdropFilter: "blur(20px)" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <img src={connectLogo} alt="LinkUp" style={{ height: 34, width: "auto", objectFit: "contain", mixBlendMode: "screen" }} />
           <div style={{ display: "flex", flexDirection: "column", gap: 1 }}>

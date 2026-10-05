@@ -4,7 +4,7 @@ export default function Stats({ stats = [] }) {
   return (
     <div style={{
       display: "grid",
-      gridTemplateColumns: `repeat(${Math.min(stats.length, 4)}, 1fr)`,
+      gridTemplateColumns: "repeat(auto-fit, minmax(130px, 1fr))",
       gap: 12,
     }}>
       {stats.map((item, i) => (

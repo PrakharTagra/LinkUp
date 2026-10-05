@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import MainLayout from "../components/layout/MainLayout";
 import Loader from "../components/common/Loader";
 import {
@@ -207,6 +207,7 @@ export default function SkillGapDashboard() {
 
         {!loading && profile ? (
           <div
+            className="grid-2-resp"
             style={{
               background: "var(--bg-2)",
               border: "1px solid var(--border)",
@@ -273,14 +274,14 @@ export default function SkillGapDashboard() {
 
         {!loading && !analyzing && result ? (
           <>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(4, minmax(0, 1fr))", gap: 12, marginBottom: 16 }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(135px, 1fr))", gap: 12, marginBottom: 16 }}>
               <StatCard title="Readiness Score" value={`${result.summary?.readiness_score || 0}%`} sub="Across selected domains" />
               <StatCard title="Matched Skills" value={result.summary?.matched_skills_count || 0} sub="Already in your profile" />
               <StatCard title="Required Skills" value={result.summary?.required_skills_count || 0} sub="From market trend data" />
               <StatCard title="Top Role Match" value={result.summary?.recommended_role || "-"} sub={`${result.summary?.best_role_match_score || 0}% fit`} />
             </div>
 
-            <div style={{ display: "grid", gridTemplateColumns: "1.2fr 0.8fr", gap: 12, marginBottom: 16 }}>
+            <div className="grid-2-resp" style={{ display: "grid", gridTemplateColumns: "1.2fr 0.8fr", gap: 12, marginBottom: 16 }}>
               <div
                 style={{
                   background: "var(--bg-2)",
@@ -363,7 +364,7 @@ export default function SkillGapDashboard() {
               </div>
             </div>
 
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: 12, marginBottom: 18 }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 12, marginBottom: 18 }}>
               <ResourceList title="Recommended Courses" type="course" items={result.recommended_resources?.courses || []} />
               <ResourceList title="Recommended Sessions" type="session" items={result.recommended_resources?.sessions || []} />
               <ResourceList title="Recommended Workshops" type="workshop" items={result.recommended_resources?.workshops || []} />

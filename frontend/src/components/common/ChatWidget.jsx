@@ -163,8 +163,8 @@ export default function ChatWidget() {
       {/* ── Floating Button ── */}
       <button
         onClick={() => setOpen(o => !o)}
+        className="chat-widget-fab"
         style={{
-          position: "fixed", bottom: 24, right: 24, zIndex: 9999,
           width: 52, height: 52, borderRadius: "50%",
           background: "linear-gradient(135deg, var(--purple) 0%, #5B4FCF 100%)",
           border: "none", cursor: "pointer", color: "#fff",
@@ -181,9 +181,7 @@ export default function ChatWidget() {
 
       {/* ── Chat Panel ── */}
       {open && (
-        <div style={{
-          position: "fixed", bottom: 88, right: 24, zIndex: 9998,
-          width: 360, maxHeight: "calc(100vh - 120px)",
+        <div className="chat-widget-panel" style={{
           background: "var(--bg-2)",
           border: "1px solid var(--border-bright)",
           borderRadius: 16,

@@ -413,6 +413,132 @@ button { cursor: pointer; font-family: 'DM Sans', sans-serif; }
   animation: rotate-border 4s linear infinite;
 }
 /* ── Responsive utilities ── */
+.desktop-only { display: block; }
+.mobile-only { display: none; }
+
+@media (max-width: 900px) {
+  .desktop-only { display: none !important; }
+  .mobile-only { display: block !important; }
+}
+
 @media (max-width: 768px) {
   .hidden-mobile { display: none !important; }
+  
+  /* Ensure container paddings don't blow out on mobile screens */
+  .main-content-pad {
+    padding: 0 14px !important;
+  }
+
+  /* Make grid 2 collapse cleanly to 1 column on tablets and mobiles */
+  .grid-2-resp {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Ensure inputs and buttons have minimum touch target (44px) */
+  button, input, select, textarea {
+    font-size: 14px !important;
+  }
 }
+
+@media (max-width: 480px) {
+  .main-content-pad {
+    padding: 0 10px !important;
+  }
+}
+
+/* ── Mobile Sidebar Drawer ── */
+.mobile-nav-drawer-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.72);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 1000;
+  animation: fadeIn 0.25s ease forwards;
+}
+
+.mobile-nav-drawer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 280px;
+  max-width: 82vw;
+  background: var(--bg-2);
+  border-right: 1px solid var(--border-bright);
+  z-index: 1001;
+  display: flex;
+  flex-direction: column;
+  padding: 18px 14px;
+  overflow-y: auto;
+  box-shadow: 10px 0 40px rgba(0,0,0,0.6);
+  animation: slideDrawer 0.28s cubic-bezier(.22,.68,0,1.1) forwards;
+}
+
+@keyframes slideDrawer {
+  from { transform: translateX(-100%); }
+  to   { transform: translateX(0); }
+}
+
+/* ── Mobile Tab Navigation Bar (Bottom Bar) ── */
+.mobile-bottom-bar {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .mobile-bottom-bar {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 58px;
+    background: rgba(12, 13, 20, 0.95);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-top: 1px solid var(--border);
+    z-index: 999;
+    align-items: center;
+    justify-content: space-around;
+    padding: 0 4px;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  .main-layout-body {
+    padding-bottom: 64px !important;
+  }
+
+  .chat-widget-fab {
+    bottom: 74px !important;
+    right: 16px !important;
+    width: 48px !important;
+    height: 48px !important;
+  }
+
+  .chat-widget-panel {
+    bottom: 132px !important;
+    right: 12px !important;
+    left: 12px !important;
+    width: auto !important;
+    max-width: none !important;
+    max-height: calc(100vh - 150px) !important;
+  }
+}
+
+/* ── Chat Widget Standard Classes ── */
+.chat-widget-fab {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 9999;
+}
+
+.chat-widget-panel {
+  position: fixed;
+  bottom: 88px;
+  right: 24px;
+  width: 360px;
+  max-width: calc(100vw - 32px);
+  max-height: calc(100vh - 120px);
+  z-index: 9998;
+}

@@ -79,7 +79,7 @@ const allNavItems = [
   { name: "Profile",    path: "/alumni/profile",              freeAccess: true  },
 ];
 
-export default function AlumniSidebar() {
+export default function AlumniSidebar({ onNavigate, isDrawer = false }) {
   const location = useLocation();
   const navigate = useNavigate();
   const { user, updateUser } = useAuth();
@@ -104,23 +104,24 @@ export default function AlumniSidebar() {
   }, []);
 
   const handleLockedClick = () => {
+    if (onNavigate) onNavigate();
     // Navigate to the locked page — the AlumniModelGate will show the upgrade UI
     navigate("/alumni/dashboard/sessions");
   };
 
   return (
     <div style={{
-      width: 220,
-      background: "var(--bg-2)",
-      borderRight: "1px solid var(--border)",
+      width: isDrawer ? "100%" : 220,
+      background: isDrawer ? "transparent" : "var(--bg-2)",
+      borderRight: isDrawer ? "none" : "1px solid var(--border)",
       display: "flex",
       flexDirection: "column",
-      padding: "14px 10px",
-      position: "sticky",
+      padding: isDrawer ? "0" : "14px 10px",
+      position: isDrawer ? "static" : "sticky",
       top: 60,
-      height: "calc(100vh - 60px)",
-      overflowY: "hidden",
-    }} className="hidden-mobile">
+      height: isDrawer ? "auto" : "calc(100vh - 60px)",
+      overflowY: isDrawer ? "auto" : "hidden",
+    }} className={isDrawer ? "" : "hidden-mobile"}>
 
       {/* Section label + plan badge */}
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 8px", marginBottom: 8 }}>
@@ -178,7 +179,12 @@ export default function AlumniSidebar() {
           }
 
           return (
-            <Link key={item.path} to={item.path} style={{ textDecoration: "none" }}>
+            <Link
+              key={item.path}
+              to={item.path}
+              onClick={() => onNavigate && onNavigate()}
+              style={{ textDecoration: "none" }}
+            >
               <div style={{
                 display: "flex", alignItems: "center", gap: 10,
                 padding: "8px 11px", borderRadius: 9,

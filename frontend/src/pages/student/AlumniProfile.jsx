@@ -595,9 +595,9 @@ export default function StudentAlumniProfile() {
               {hasEducationData === false ? (
                 <p style={{ fontSize: 13, color: "var(--text-3)" }}>Education details are not available.</p>
               ) : (
-                <div style={{
+                <div className="grid-2-resp" style={{
                   display: "grid",
-                  gridTemplateColumns: "minmax(250px, 1.2fr) minmax(200px, 0.8fr)",
+                  gridTemplateColumns: "1fr 1fr",
                   gap: 12,
                 }}>
                   <div style={{
@@ -678,9 +678,9 @@ export default function StudentAlumniProfile() {
               {filteredDetailRows.length === 0 ? (
                 <p style={{ fontSize: 13, color: "var(--text-3)" }}>Profile details are not available.</p>
               ) : (
-                <div style={{
+                <div className="grid-2-resp" style={{
                   display: "grid",
-                  gridTemplateColumns: "minmax(250px, 1.2fr) minmax(200px, 0.8fr)",
+                  gridTemplateColumns: "1fr 1fr",
                   gap: 12,
                 }}>
                   <div style={{

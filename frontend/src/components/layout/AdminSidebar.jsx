@@ -40,20 +40,20 @@ const navItems = [
   { name: "Analytics", path: "/admin/analytics"},
 ];
 
-export default function AdminSidebar() {
+export default function AdminSidebar({ onNavigate, isDrawer = false }) {
   const location = useLocation();
 
   return (
     <div style={{
-      width: 220,
-      background: "var(--bg-2)",
-      borderRight: "1px solid var(--border)",
+      width: isDrawer ? "100%" : 220,
+      background: isDrawer ? "transparent" : "var(--bg-2)",
+      borderRight: isDrawer ? "none" : "1px solid var(--border)",
       display: "flex", flexDirection: "column",
-      padding: "20px 12px",
-      minHeight: "calc(100vh - 60px)",
-      position: "sticky", top: 60,
-      height: "calc(100vh - 60px)", overflowY: "auto",
-    }} className="hidden-mobile">
+      padding: isDrawer ? "0" : "20px 12px",
+      minHeight: isDrawer ? "auto" : "calc(100vh - 60px)",
+      position: isDrawer ? "static" : "sticky", top: 60,
+      height: isDrawer ? "auto" : "calc(100vh - 60px)", overflowY: "auto",
+    }} className={isDrawer ? "" : "hidden-mobile"}>
 
       <p style={{ fontSize: 10, fontWeight: 700, color: "var(--text-3)", letterSpacing: "0.12em", textTransform: "uppercase", padding: "0 8px", marginBottom: 12 }}>
         Admin Panel
@@ -63,7 +63,12 @@ export default function AdminSidebar() {
         {navItems.map(item => {
           const active = location.pathname === item.path;
           return (
-            <Link key={item.path} to={item.path} style={{ textDecoration: "none" }}>
+            <Link
+              key={item.path}
+              to={item.path}
+              onClick={() => onNavigate && onNavigate()}
+              style={{ textDecoration: "none" }}
+            >
               <div style={{
                 display: "flex", alignItems: "center", gap: 10,
                 padding: "9px 12px", borderRadius: 10,
