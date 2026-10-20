@@ -1,0 +1,22 @@
+name: Keep Render ML Service Awake
+
+on:
+  schedule:
+    # Runs every 12 minutes 24/7 to prevent Render free-tier from sleeping
+    - cron: '*/12 * * * *'
+  workflow_dispatch:
+
+jobs:
+  ping-ml:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Render ML Service Health Endpoint
+        run: |
+          TARGET_URL="${{ secrets.RENDER_ML_URL }}"
+          if [ -z "$TARGET_URL" ]; then
+            TARGET_URL="https://linkup-ml.onrender.com"
+          fi
+          CLEAN_URL="${TARGET_URL%/}"
+          echo "Pinging ML Service health endpoint: $CLEAN_URL/health"
+          RESPONSE=$(curl -s -L -w "\nHTTP_STATUS:%{http_code}" --max-time 30 "$CLEAN_URL/health" || true)
+          echo "$RESPONSE"

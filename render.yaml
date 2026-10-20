@@ -1,37 +1,4 @@
 services:
-  # ── LinkUp Node.js Main Backend ──────────────────────────────────────────
-  - type: web
-    name: linkup-backend
-    runtime: node
-    plan: free
-    rootDir: backend
-    buildCommand: npm install
-    startCommand: npm start
-    healthCheckPath: /health
-    envVars:
-      - key: NODE_ENV
-        value: production
-      - key: PORT
-        value: 10000
-      - key: FRONTEND_URL
-        sync: false
-      - key: MONGO_URI
-        sync: false
-      - key: JWT_SECRET
-        generateValue: true
-      - key: GROQ_API_KEY
-        sync: false
-      - key: ML_SERVICE_URL
-        sync: false
-      - key: SKILL_GAP_SERVICE_URL
-        sync: false
-      - key: CLOUDINARY_CLOUD_NAME
-        sync: false
-      - key: CLOUDINARY_API_KEY
-        sync: false
-      - key: CLOUDINARY_API_SECRET
-        sync: false
-
   # ── LinkUp Python Unified ML Service (Career Path + Skill Gap) ──────────
   - type: web
     name: linkup-ml
@@ -45,4 +12,6 @@ services:
       - key: PYTHON_VERSION
         value: 3.11.9
       - key: MONGO_URI
+        sync: false
+      - key: KEEP_ALIVE_URL
         sync: false

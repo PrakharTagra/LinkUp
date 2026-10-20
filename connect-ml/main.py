@@ -477,19 +477,19 @@ def skill_gap_batch_analyze():
 
 # ── Render Keep-Alive Background Worker ────────────────────────────────────
 def run_keep_alive():
-    """Pings itself every 13 minutes on Render so free instance stays awake."""
+    """Pings itself every 10 minutes on Render so free instance stays awake."""
     import requests
-    time.sleep(30)
+    time.sleep(25)
     while True:
         try:
-            self_url = os.getenv("RENDER_EXTERNAL_URL") or os.getenv("KEEP_ALIVE_URL")
-            if self_url:
+            self_url = os.getenv("RENDER_EXTERNAL_URL") or os.getenv("KEEP_ALIVE_URL") or os.getenv("SELF_URL")
+            if self_url and not self_url.startswith("http://localhost") and not self_url.startswith("http://127.0.0.1"):
                 target = self_url.rstrip("/") + "/health"
-                resp = requests.get(target, timeout=10)
+                resp = requests.get(target, headers={"User-Agent": "LinkUp-KeepAlive/1.0"}, timeout=15)
                 print(f"[Keep-Alive] Pinged self at {target} -> {resp.status_code}")
         except Exception as e:
             print(f"[Keep-Alive] Notice: {e}")
-        time.sleep(13 * 60)
+        time.sleep(10 * 60)
 
 threading.Thread(target=run_keep_alive, daemon=True).start()
 

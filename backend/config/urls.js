@@ -9,16 +9,16 @@
  * ═══════════════════════════════════════════════════════════════
  */
 
-// The deployed frontend URL, used for CORS.
+// The deployed frontend URL, used for CORS fallback.
 export const FRONTEND_URL =
   process.env.FRONTEND_URL || "https://link-up-beige.vercel.app";
 
-// The Unified ML & Skill Gap microservice URL.
+// The Unified ML & Skill Gap microservice URL on Render.
 const rawSkillGapUrl =
   process.env.SKILL_GAP_SERVICE_URL ||
   process.env.ML_SERVICE_URL ||
-  "https://linkup-ml-sygp.onrender.com";
+  "https://linkup-ml.onrender.com";
 
 export const SKILL_GAP_SERVICE_URL = rawSkillGapUrl
   .replace(/\/predict\/?$/, "")
-  .replace(/\/$/, "");
+  .replace(/\/+$/, "");

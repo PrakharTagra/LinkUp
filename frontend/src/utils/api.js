@@ -1,11 +1,21 @@
 import axios from "axios";
 import { API_URL } from "../config/urls.js";
 
-// Normalize baseURL so that having or not having a trailing "/api" doesn't produce "/api/api"
-const cleanBaseUrl = (API_URL || "http://localhost:5000").replace(/\/+$/, "");
-const resolvedBaseURL = cleanBaseUrl.endsWith("/api")
-  ? cleanBaseUrl
-  : `${cleanBaseUrl}/api`;
+// Normalize baseURL:
+// - If VITE_API_URL is configured, use it.
+// - In production with unified Vercel deployment, defaults to relative "/api" (same origin).
+// - In local dev without VITE_API_URL, defaults to "http://localhost:5000/api".
+const rawUrl = (API_URL !== undefined && API_URL !== null ? String(API_URL) : "").trim();
+let resolvedBaseURL = "/api";
+
+if (rawUrl) {
+  const clean = rawUrl.replace(/\/+$/, "");
+  resolvedBaseURL = clean.endsWith("/api") ? clean : `${clean}/api`;
+} else if (import.meta.env.DEV) {
+  resolvedBaseURL = "http://localhost:5000/api";
+} else {
+  resolvedBaseURL = "/api";
+}
 
 const API = axios.create({
   baseURL: resolvedBaseURL,
@@ -35,5 +45,4 @@ API.interceptors.response.use(
   }
 );
 
-// ✅ VERY IMPORTANT (THIS WAS MISSING)
 export default API;
