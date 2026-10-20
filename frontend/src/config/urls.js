@@ -17,4 +17,4 @@ export const API_URL = import.meta.env.VITE_API_URL || "";
 export const AI_API_URL = import.meta.env.VITE_AI_API_URL || API_URL;
 
 // Unified Career path & Skill Gap ML recommendation microservice on Render
-export const ML_API_URL = import.meta.env.VITE_ML_API_URL || "https://linkup-ml.onrender.com";
+export const ML_API_URL = import.meta.env.VITE_ML_API_URL || "https://linkup-q4xj.onrender.com";

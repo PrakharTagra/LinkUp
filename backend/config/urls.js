@@ -11,13 +11,13 @@
 
 // The deployed frontend URL, used for CORS fallback.
 export const FRONTEND_URL =
-  process.env.FRONTEND_URL || "https://link-up-beige.vercel.app";
+  process.env.FRONTEND_URL || "https://linkup-blue.vercel.app";
 
 // The Unified ML & Skill Gap microservice URL on Render.
 const rawSkillGapUrl =
   process.env.SKILL_GAP_SERVICE_URL ||
   process.env.ML_SERVICE_URL ||
-  "https://linkup-ml.onrender.com";
+  "https://linkup-q4xj.onrender.com";
 
 export const SKILL_GAP_SERVICE_URL = rawSkillGapUrl
   .replace(/\/predict\/?$/, "")
