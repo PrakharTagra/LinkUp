@@ -19,6 +19,8 @@ export default function MainLayout({ children }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh", background: "var(--bg)", width: "100%", overflowX: "hidden" }}>
       <Navbar onToggleSidebar={() => setMobileDrawerOpen(prev => !prev)} />
+      {/* 60px placeholder so content starts right after the fixed navbar */}
+      <div style={{ height: 60, minHeight: 60, flexShrink: 0 }} aria-hidden="true" />
 
       {/* Mobile Drawer Overlay for existing sidebar */}
       {mobileDrawerOpen && (
