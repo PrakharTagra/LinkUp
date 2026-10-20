@@ -44,20 +44,40 @@ export default function AdminSidebar({ onNavigate, isDrawer = false }) {
   const location = useLocation();
 
   return (
-    <div style={{
-      width: isDrawer ? "100%" : 220,
-      background: isDrawer ? "transparent" : "var(--bg-2)",
-      borderRight: isDrawer ? "none" : "1px solid var(--border)",
-      display: "flex", flexDirection: "column",
-      padding: isDrawer ? "0" : "20px 12px",
-      minHeight: isDrawer ? "auto" : "calc(100vh - 60px)",
-      position: isDrawer ? "static" : "sticky", top: 60,
-      height: isDrawer ? "auto" : "calc(100vh - 60px)", overflowY: "auto",
-    }} className={isDrawer ? "" : "hidden-mobile"}>
-
-      <p style={{ fontSize: 10, fontWeight: 700, color: "var(--text-3)", letterSpacing: "0.12em", textTransform: "uppercase", padding: "0 8px", marginBottom: 12 }}>
-        Admin Panel
-      </p>
+    <aside
+      className={`linkup-sidebar ${isDrawer ? "" : "hidden-mobile"}`}
+      style={{
+        width: isDrawer ? "100%" : 240,
+        flexShrink: 0,
+        background: isDrawer ? "transparent" : "var(--bg-2)",
+        borderRight: isDrawer ? "none" : "1px solid var(--border)",
+        display: "flex",
+        flexDirection: "column",
+        padding: isDrawer ? "0 0 20px 0" : "16px 12px 24px 12px",
+        position: isDrawer ? "static" : "sticky",
+        top: 60,
+        height: isDrawer ? "auto" : "calc(100vh - 60px)",
+        maxHeight: isDrawer ? "none" : "calc(100vh - 60px)",
+        overflowY: "auto",
+        overflowX: "hidden",
+        boxSizing: "border-box",
+        scrollbarWidth: "thin",
+        scrollbarColor: "rgba(255,255,255,0.12) transparent",
+      }}
+    >
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 8px", marginBottom: 10 }}>
+        <p style={{ fontSize: 10, fontWeight: 700, color: "var(--text-3)", letterSpacing: "0.12em", textTransform: "uppercase", margin: 0 }}>
+          Admin Panel
+        </p>
+        <span style={{
+          fontSize: 9, fontWeight: 700, padding: "2px 7px", borderRadius: 99,
+          background: "rgba(0,229,195,0.1)",
+          color: "var(--teal)",
+          border: "1px solid rgba(0,229,195,0.25)",
+        }}>
+          ROOT
+        </span>
+      </div>
 
       <nav style={{ display: "flex", flexDirection: "column", gap: 3 }}>
         {navItems.map(item => {
@@ -69,36 +89,57 @@ export default function AdminSidebar({ onNavigate, isDrawer = false }) {
               onClick={() => onNavigate && onNavigate()}
               style={{ textDecoration: "none" }}
             >
-              <div style={{
-                display: "flex", alignItems: "center", gap: 10,
-                padding: "9px 12px", borderRadius: 10,
-                background: active ? "rgba(0,229,195,0.1)" : "transparent",
-                border: `1px solid ${active ? "rgba(0,229,195,0.25)" : "transparent"}`,
-                color: active ? "var(--teal)" : "var(--text-2)",
-                transition: "all 0.15s", cursor: "pointer",
-              }}
-              onMouseEnter={e => { if (!active) { e.currentTarget.style.background = "rgba(255,255,255,0.04)"; e.currentTarget.style.color = "var(--text)"; } }}
-              onMouseLeave={e => { if (!active) { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "var(--text-2)"; } }}
+              <div
+                style={{
+                  display: "flex", alignItems: "center", gap: 10,
+                  padding: "8px 12px", borderRadius: 10,
+                  background: active ? "rgba(0,229,195,0.1)" : "transparent",
+                  border: `1px solid ${active ? "rgba(0,229,195,0.25)" : "transparent"}`,
+                  color: active ? "var(--teal)" : "var(--text-2)",
+                  transition: "all 0.15s ease",
+                  cursor: "pointer",
+                }}
+                onMouseEnter={e => {
+                  if (!active) {
+                    e.currentTarget.style.background = "rgba(255,255,255,0.05)";
+                    e.currentTarget.style.color = "var(--text)";
+                  }
+                }}
+                onMouseLeave={e => {
+                  if (!active) {
+                    e.currentTarget.style.background = "transparent";
+                    e.currentTarget.style.color = "var(--text-2)";
+                  }
+                }}
               >
-                <span style={{ opacity: active ? 1 : 0.6, display: "flex" }}>{icons[item.name]}</span>
-                <span style={{ fontSize: 14, fontWeight: active ? 600 : 400 }}>{item.name}</span>
+                <span style={{ opacity: active ? 1 : 0.65, display: "flex", flexShrink: 0 }}>
+                  {icons[item.name]}
+                </span>
+                <span style={{ fontSize: 13.5, fontWeight: active ? 600 : 400 }}>
+                  {item.name}
+                </span>
               </div>
             </Link>
           );
         })}
       </nav>
 
-      <div style={{ flex: 1 }} />
+      <div style={{ flex: 1, minHeight: 14 }} />
 
       <div style={{
-        margin: "16px 0", padding: "14px",
-        background: "rgba(0,229,195,0.06)", border: "1px solid rgba(0,229,195,0.18)", borderRadius: 12,
+        marginTop: 10,
+        padding: "12px",
+        background: "rgba(0,229,195,0.06)",
+        border: "1px solid rgba(0,229,195,0.18)",
+        borderRadius: 12,
       }}>
-        <p style={{ fontSize: 10, color: "var(--teal)", fontWeight: 700, marginBottom: 4 }}>ADMIN MODE</p>
-        <p style={{ fontSize: 12, color: "var(--text-3)", lineHeight: 1.5 }}>Full platform access enabled.</p>
+        <p style={{ fontSize: 10, color: "var(--teal)", fontWeight: 700, margin: "0 0 4px 0" }}>
+          ADMIN MODE
+        </p>
+        <p style={{ fontSize: 11, color: "var(--text-3)", lineHeight: 1.45, margin: 0 }}>
+          Full platform oversight enabled.
+        </p>
       </div>
-
-      <style>{`@media (max-width: 768px) { .hidden-mobile { display: none !important; } }`}</style>
-    </div>
+    </aside>
   );
 }

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { getConversations } from "../../services/chatService";
+import API from "../../utils/api";
 
 const icons = {
   CareerPath: (
@@ -78,31 +79,41 @@ const navItems = [
 export default function StudentSidebar({ onNavigate, isDrawer = false }) {
   const location = useLocation();
   const [unreadCount, setUnreadCount] = useState(0);
+  const [pendingCount, setPendingCount] = useState(0);
 
   useEffect(() => {
     let isMounted = true;
 
-    const refreshUnreadCount = async () => {
+    const refreshSidebarData = async () => {
       try {
-        const data = await getConversations();
-        const totalUnread = (data?.conversations || []).reduce(
-          (sum, row) => sum + Number(row?.unread || 0),
-          0
-        );
+        const [convRes, connRes] = await Promise.allSettled([
+          getConversations(),
+          API.get("/connections/pending-all").catch(() => API.get("/connections/pending")),
+        ]);
 
-        if (isMounted) {
+        if (isMounted && convRes.status === "fulfilled") {
+          const totalUnread = (convRes.value?.conversations || []).reduce(
+            (sum, row) => sum + Number(row?.unread || 0),
+            0
+          );
           setUnreadCount(totalUnread);
+        }
+
+        if (isMounted && connRes.status === "fulfilled") {
+          const pending = connRes.value?.data?.pending || [];
+          setPendingCount(pending.length);
         }
       } catch {
         if (isMounted) {
           setUnreadCount(0);
+          setPendingCount(0);
         }
       }
     };
 
-    refreshUnreadCount();
-    const intervalId = setInterval(refreshUnreadCount, 15000);
-    const onFocus = () => refreshUnreadCount();
+    refreshSidebarData();
+    const intervalId = setInterval(refreshSidebarData, 20000);
+    const onFocus = () => refreshSidebarData();
 
     window.addEventListener("focus", onFocus);
 
@@ -113,34 +124,64 @@ export default function StudentSidebar({ onNavigate, isDrawer = false }) {
     };
   }, [location.pathname]);
 
-  const computedNavItems = navItems.map((item) =>
-    item.name === "Messages" ? { ...item, badge: unreadCount > 0 ? unreadCount : undefined } : item
-  );
+  const isItemActive = (item) => {
+    const current = location.pathname;
+    if (current === item.path) return true;
+    if (item.name === "Academics" && (current === "/course-detail" || current === "/session-workshop-detail" || current.startsWith("/live/"))) {
+      return true;
+    }
+    if (item.name === "Networking" && current === "/alumni-profile") {
+      return true;
+    }
+    return false;
+  };
 
   return (
-    <div style={{
-      width: isDrawer ? "100%" : 220,
-      background: isDrawer ? "transparent" : "var(--bg-2)",
-      borderRight: isDrawer ? "none" : "1px solid var(--border)",
-      display: "flex",
-      flexDirection: "column",
-      padding: isDrawer ? "0" : "20px 12px",
-      minHeight: isDrawer ? "auto" : "calc(100vh - 60px)",
-      position: isDrawer ? "static" : "sticky",
-      top: 60,
-      height: isDrawer ? "auto" : "calc(100vh - 60px)",
-      overflowY: "auto",
-    }} className={isDrawer ? "" : "hidden-mobile"}>
-
+    <aside
+      className={`linkup-sidebar ${isDrawer ? "" : "hidden-mobile"}`}
+      style={{
+        width: isDrawer ? "100%" : 240,
+        flexShrink: 0,
+        background: isDrawer ? "transparent" : "var(--bg-2)",
+        borderRight: isDrawer ? "none" : "1px solid var(--border)",
+        display: "flex",
+        flexDirection: "column",
+        padding: isDrawer ? "0 0 20px 0" : "16px 12px 24px 12px",
+        position: isDrawer ? "static" : "sticky",
+        top: 60,
+        height: isDrawer ? "auto" : "calc(100vh - 60px)",
+        maxHeight: isDrawer ? "none" : "calc(100vh - 60px)",
+        overflowY: "auto",
+        overflowX: "hidden",
+        boxSizing: "border-box",
+        scrollbarWidth: "thin",
+        scrollbarColor: "rgba(255,255,255,0.12) transparent",
+      }}
+    >
       {/* Section label */}
-      <p style={{ fontSize: 10, fontWeight: 700, color: "var(--text-3)", letterSpacing: "0.12em", textTransform: "uppercase", padding: "0 8px", marginBottom: 12 }}>
-        Student Portal
-      </p>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 8px", marginBottom: 10 }}>
+        <p style={{ fontSize: 10, fontWeight: 700, color: "var(--text-3)", letterSpacing: "0.12em", textTransform: "uppercase", margin: 0 }}>
+          Student Portal
+        </p>
+        <span style={{
+          fontSize: 9, fontWeight: 700, padding: "2px 7px", borderRadius: 99,
+          background: "rgba(124,92,252,0.12)",
+          color: "var(--purple-light)",
+          border: "1px solid rgba(124,92,252,0.25)",
+        }}>
+          ACTIVE
+        </span>
+      </div>
 
       {/* Nav items */}
       <nav style={{ display: "flex", flexDirection: "column", gap: 3 }}>
-        {computedNavItems.map(item => {
-          const active = location.pathname === item.path;
+        {navItems.map(item => {
+          const active = isItemActive(item);
+
+          let badgeCount = 0;
+          if (item.name === "Messages") badgeCount = unreadCount;
+          if (item.name === "Connections") badgeCount = pendingCount;
+
           return (
             <Link
               key={item.path}
@@ -148,29 +189,54 @@ export default function StudentSidebar({ onNavigate, isDrawer = false }) {
               onClick={() => onNavigate && onNavigate()}
               style={{ textDecoration: "none" }}
             >
-              <div style={{
-                display: "flex", alignItems: "center", gap: 10,
-                padding: "9px 12px", borderRadius: 10,
-                background: active ? "rgba(124,92,252,0.12)" : "transparent",
-                border: `1px solid ${active ? "rgba(124,92,252,0.25)" : "transparent"}`,
-                color: active ? "var(--purple-light)" : "var(--text-2)",
-                transition: "all 0.15s",
-                cursor: "pointer",
-                justifyContent: "space-between",
-              }}
-              onMouseEnter={e => { if (!active) { e.currentTarget.style.background = "rgba(255,255,255,0.04)"; e.currentTarget.style.color = "var(--text)"; } }}
-              onMouseLeave={e => { if (!active) { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "var(--text-2)"; } }}
+              <div
+                style={{
+                  display: "flex", alignItems: "center",
+                  padding: "8px 12px", borderRadius: 10,
+                  background: active ? "rgba(124,92,252,0.12)" : "transparent",
+                  border: `1px solid ${active ? "rgba(124,92,252,0.3)" : "transparent"}`,
+                  color: active ? "var(--purple-light)" : "var(--text-2)",
+                  transition: "all 0.15s ease",
+                  cursor: "pointer",
+                  justifyContent: "space-between",
+                }}
+                onMouseEnter={e => {
+                  if (!active) {
+                    e.currentTarget.style.background = "rgba(255,255,255,0.05)";
+                    e.currentTarget.style.color = "var(--text)";
+                  }
+                }}
+                onMouseLeave={e => {
+                  if (!active) {
+                    e.currentTarget.style.background = "transparent";
+                    e.currentTarget.style.color = "var(--text-2)";
+                  }
+                }}
               >
-                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                  <span style={{ opacity: active ? 1 : 0.6, display: "flex" }}>{icons[item.name] || icons.MyLearning}</span>
-                  <span style={{ fontSize: 14, fontWeight: active ? 600 : 400 }}>{item.label || item.name}</span>
+                <div style={{ display: "flex", alignItems: "center", gap: 10, minWidth: 0 }}>
+                  <span style={{ opacity: active ? 1 : 0.65, display: "flex", flexShrink: 0 }}>
+                    {icons[item.name] || icons.MyLearning}
+                  </span>
+                  <span style={{
+                    fontSize: 13.5,
+                    fontWeight: active ? 600 : 400,
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis"
+                  }}>
+                    {item.label || item.name}
+                  </span>
                 </div>
-                {item.badge && (
+                {badgeCount > 0 && (
                   <span style={{
                     background: "var(--purple)", color: "white",
                     borderRadius: 99, fontSize: 10, fontWeight: 700,
-                    padding: "1px 6px", minWidth: 18, textAlign: "center",
-                  }}>{item.badge}</span>
+                    padding: "1px 6px", minWidth: 18, height: 18,
+                    display: "inline-flex", alignItems: "center", justifyContent: "center",
+                    flexShrink: 0,
+                  }}>
+                    {badgeCount}
+                  </span>
                 )}
               </div>
             </Link>
@@ -178,51 +244,52 @@ export default function StudentSidebar({ onNavigate, isDrawer = false }) {
         })}
       </nav>
 
-      {/* Spacer */}
-      <div style={{ flex: 1 }} />
+      {/* Spacer to push promotional card down if there's spare vertical space */}
+      <div style={{ flex: 1, minHeight: 14 }} />
 
       {/* Upgrade CTA */}
       <div style={{
-        margin: "16px 0",
-        padding: "16px",
-        background: "linear-gradient(135deg, rgba(124,92,252,0.15), rgba(255,112,67,0.1))",
-        border: "1px solid rgba(124,92,252,0.25)",
-        borderRadius: 14,
+        marginTop: 10,
+        padding: "12px",
+        background: "linear-gradient(135deg, rgba(124,92,252,0.14), rgba(255,112,67,0.08))",
+        border: "1px solid rgba(124,92,252,0.22)",
+        borderRadius: 12,
       }}>
-        <div style={{ fontSize: 16, marginBottom: 6 }}>⭐</div>
-        <p style={{ fontFamily: "Plus Jakarta Sans", fontWeight: 700, fontSize: 13, marginBottom: 4 }}>
-          Explore Membership Plans
-        </p>
-        <p style={{ fontSize: 12, color: "var(--text-2)", marginBottom: 12, lineHeight: 1.5 }}>
-          Compare plans to unlock mentorship perks, priority support, and exclusive student benefits.
+        <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 5 }}>
+          <span style={{ fontSize: 14 }}>⭐</span>
+          <p style={{ fontFamily: "Plus Jakarta Sans", fontWeight: 700, fontSize: 12.5, margin: 0, color: "var(--text)" }}>
+            Explore Memberships
+          </p>
+        </div>
+        <p style={{ fontSize: 11, color: "var(--text-2)", margin: "0 0 10px 0", lineHeight: 1.4 }}>
+          Access 1:1 alumni mentorship, mock interviews, and courses.
         </p>
         <Link
           to="/membership-alumni"
+          onClick={() => onNavigate && onNavigate()}
           style={{
             width: "100%",
-            padding: "8px",
+            padding: "7px 10px",
             background: "linear-gradient(135deg, #7C5CFC, #9B7EFF)",
-            borderRadius: 9,
+            borderRadius: 8,
             color: "white",
             fontSize: 12,
             fontWeight: 700,
             fontFamily: "Plus Jakarta Sans",
             cursor: "pointer",
-            transition: "opacity 0.2s",
+            transition: "opacity 0.2s ease, transform 0.15s ease",
             textDecoration: "none",
-            display: "block",
-            textAlign: "center",
+            display: "inline-flex",
+            justifyContent: "center",
+            alignItems: "center",
+            boxSizing: "border-box",
           }}
-          onMouseEnter={e => e.currentTarget.style.opacity = "0.85"}
-          onMouseLeave={e => e.currentTarget.style.opacity = "1"}
+          onMouseEnter={e => { e.currentTarget.style.opacity = "0.9"; e.currentTarget.style.transform = "translateY(-1px)"; }}
+          onMouseLeave={e => { e.currentTarget.style.opacity = "1"; e.currentTarget.style.transform = "none"; }}
         >
-          View Memberships →
+          View Plans →
         </Link>
       </div>
-
-      <style>{`
-        @media (max-width: 768px) { .hidden-mobile { display: none !important; } }
-      `}</style>
-    </div>
+    </aside>
   );
 }
