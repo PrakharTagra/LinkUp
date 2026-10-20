@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "npm --prefix frontend install && npm --prefix frontend run build",
+    "build": "node scripts/build.js",
     "start": "node backend/index.js",
     "dev:frontend": "npm --prefix frontend run dev",
     "dev:backend": "node backend/index.js"
@@ -24,5 +24,8 @@
     "mongoose": "^9.4.1",
     "natural": "^8.1.1",
     "nodemailer": "^8.0.5"
+  },
+  "devDependencies": {
+    "vite": "^8.1.5"
   }
 }
