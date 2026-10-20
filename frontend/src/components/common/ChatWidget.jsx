@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect, useMemo } from "react";
 import { useLocation } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { AI_API_URL } from "../../config/urls.js";
+import API from "../../utils/api";
 
 // ─── Icons ────────────────────────────────────────────────────────────────────
 const ChatIcon = () => (
@@ -98,7 +99,7 @@ function BotMessage({ text }) {
 }
 
 // ─── Main Widget ──────────────────────────────────────────────────────────────
-const API_BASE = AI_API_URL;
+const API_BASE = (AI_API_URL || "/api").replace(/\/+$/, "");
 
 export default function ChatWidget() {
   const { user } = useAuth();

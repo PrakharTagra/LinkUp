@@ -19,6 +19,17 @@ export const getMyEarnings = async (req, res) => {
 // ─────────────────────────────
 export const getEarningStats = async (req, res) => {
   try {
+    if (!req.user || req.user.role !== "alumni") {
+      return res.json({
+        totalGross: 0,
+        netEarnings: 0,
+        platformFee: 0,
+        thisMonth: 0,
+        sessionCount: 0,
+        totalTransactions: 0,
+      });
+    }
+
     const earnings = await Earning.find({ alumni: req.user._id });
 
     const now = new Date();
@@ -29,7 +40,7 @@ export const getEarningStats = async (req, res) => {
     const net = total - platformFee;
     const thisMonth = thisMonthEarnings.reduce((sum, e) => sum + (e.alumniShare || 0), 0);
 
-    res.json({
+    return res.json({
       totalGross: total,
       netEarnings: net,
       platformFee,
@@ -38,7 +49,7 @@ export const getEarningStats = async (req, res) => {
       totalTransactions: earnings.length,
     });
   } catch (err) {
-    res.status(500).json({ message: "Server error", error: err.message });
+    return res.status(500).json({ message: "Server error", error: err.message });
   }
 };
 

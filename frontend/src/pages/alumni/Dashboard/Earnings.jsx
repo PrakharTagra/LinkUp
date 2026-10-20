@@ -26,7 +26,7 @@ export default function Earnings() {
       try {
         const [earningsRes, statsRes] = await Promise.all([
           API.get("/earnings"),
-          API.get("/earnings/stats")
+          API.get("/earnings/stats").catch(() => ({ data: {} }))
         ]);
         setTransactions(earningsRes.data.earnings || []);
         setStats(statsRes.data || null);

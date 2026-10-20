@@ -23,7 +23,7 @@ export default function AlumniMembershipPage() {
     try {
       const [conversationRes, earningsRes] = await Promise.all([
         API.get("/messages/conversations"),
-        API.get("/earnings/stats"),
+        API.get("/earnings/stats").catch(() => ({ data: {} })),
       ]);
 
       setConversations(conversationRes.data.conversations || []);

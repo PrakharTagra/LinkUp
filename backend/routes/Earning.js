@@ -9,14 +9,14 @@ import { protect, roleGuard, premiumGuard } from "../middleware/auth.js";
 
 const router = express.Router();
 
-// ✅ Apply guards once (cleaner)
-router.use(protect, roleGuard("alumni"), premiumGuard);
-
 // ─────────────────────────────
 // EARNINGS
 // ─────────────────────────────
-router.get("/", getMyEarnings);
-router.get("/stats", getEarningStats);
-router.post("/withdraw", requestWithdrawal);
+// Any authenticated alumni can view their earnings and stats (returns 0 if simple or empty)
+router.get("/", protect, roleGuard("alumni"), getMyEarnings);
+router.get("/stats", protect, getEarningStats);
+
+// Only premium alumni can request withdrawals
+router.post("/withdraw", protect, roleGuard("alumni"), premiumGuard, requestWithdrawal);
 
 export default router;

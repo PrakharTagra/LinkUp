@@ -71,7 +71,7 @@ function AlumniProfile() {
         const [meRes, postsRes, earningsRes, sessionsRes] = await Promise.all([
           API.get("/auth/me"),
           API.get("/posts/my"),
-          API.get("/earnings/stats"),
+          API.get("/earnings/stats").catch(() => ({ data: {} })),
           API.get("/sessions/my"),
         ]);
 
