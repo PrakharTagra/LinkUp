@@ -53,11 +53,14 @@ export default function MainLayout({ children }) {
       )}
 
       <div style={{ display: "flex", flex: 1, minWidth: 0, width: "100%" }}>
+        {/* Fixed sidebar for desktop */}
         {renderSidebar()}
-        <main className="main-content-pad" style={{ flex: 1, padding: "0 24px", overflowY: "auto", minWidth: 0, width: "100%" }}>
+        {/* Spacer for desktop layout so main content sits right next to the 240px fixed sidebar without overlapping */}
+        {user && <div className="hidden-mobile" style={{ width: 240, minWidth: 240, flexShrink: 0 }} aria-hidden="true" />}
+        <main className="main-content-pad" style={{ flex: 1, padding: "0 24px", minWidth: 0, width: "100%" }}>
           {children}
         </main>
       </div>
     </div>
   );
-}
+}
