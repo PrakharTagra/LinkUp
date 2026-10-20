@@ -24,13 +24,13 @@
       }
     },
     {
-      "source": "/chat",
+      "source": "/chat/(.*)",
       "destination": {
         "service": "backend"
       }
     },
     {
-      "source": "/chat/(.*)",
+      "source": "/chat",
       "destination": {
         "service": "backend"
       }
@@ -50,13 +50,22 @@
     {
       "source": "/assets/(.*)",
       "destination": {
-        "service": "frontend"
+        "service": "frontend",
+        "path": "/assets/$1"
       }
     },
     {
-      "source": "/(.*\\.(?:ico|png|svg|jpg|jpeg|gif|webp|json|css|js|woff|woff2|ttf))",
+      "source": "/favicon.ico",
       "destination": {
-        "service": "frontend"
+        "service": "frontend",
+        "path": "/favicon.ico"
+      }
+    },
+    {
+      "source": "/connect-logo.png",
+      "destination": {
+        "service": "frontend",
+        "path": "/connect-logo.png"
       }
     },
     {
